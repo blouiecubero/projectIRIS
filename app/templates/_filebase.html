@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block page_content %}
+<ul class="filebase">
+	{% for file in finance %}
+	<li class="filelist">
+		<div class="file-date">Date posted: {{ moment(file.date).fromNow() }}</div>
+		<div class="file-author"><a href="http://127.0.0.1:5000/uploads/files/{{file. filename}}">{{ file.filename }}</a></div>
+		<div class="file-body">Description: {{ file.description }}</div>
+</li>
+	{% endfor %}
+{% endblock %}
