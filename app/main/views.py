@@ -3,7 +3,7 @@ from flask import render_template, session,send_from_directory, redirect, url_fo
 from . import main
 from .forms import NameForm, EditProfileForm, PostForm, EditProfileAdminForm, EditUserNameForm, FinanceForm
 from .. import db
-from ..models import Permission, Role, User, Post
+from ..models import Permission, Role, User, Post, FileBase
 from flask.ext.login import login_user, logout_user, login_required, current_user
 from ..decorators import admin_required
 from werkzeug import secure_filename
@@ -52,14 +52,11 @@ def user(username):
     user = User.query.filter_by(username=username).first()
     if user.picture is None:
         user.picture = 'images.jpg'
-    if user.filename is None:
-        user.filename = 'Nofile.html'
     if user is None:
         abort(404)
     posts = user.posts.order_by(Post.timestamp.desc()).all()
     picture = 'http://127.0.0.1:5000/uploads/photos/' + user.picture
-    finance = 'http://127.0.0.1:5000/uploads/files/' + user.filename
-    return render_template('user.html', user=user,posts=posts, filename=picture, financefile=user.filename, finance= finance)
+    return render_template('user.html', user=user,posts=posts, filename=picture)
 
 @main.route('/edit-profile', methods=['GET','POST'])
 @login_required
@@ -138,13 +135,23 @@ def upload_finance():
     if request.method == 'POST':
         file = request.files['upload']
         wcuser = request.form['users']
+        desc = request.form['description']
         if file and allowed_files(file.filename):
-            filename = secure_filename(file.filename)
-            user = User.query.filter_by(username=wcuser).first()
-            user.filename = filename
-            file.save(os.path.join(c.FILES_FOLDER, filename))
+            file_name = secure_filename(file.filename)
+            userid = user = User.query.filter_by(username=wcuser).first()
+            user = FileBase(owner = userid, filename = file_name, description = desc)
+            db.session.add(user)
+            file.save(os.path.join(c.FILES_FOLDER, file_name))
             return redirect(url_for('.user', username=current_user.username))
     return render_template('upload_finance.html', userquery=user)
+
+@main.route('/filebase-user/', methods=['GET', 'POST'])
+@login_required
+def list_of_finance():
+    user = User.query.filter_by(username=current_user.username).first()
+    finance = user.stored_file.order_by(FileBase.date.desc()).all()
+    return render_template('_filebase.html', finance = finance)
+    
 
 @main.route('/uploads/photos/<filename>')
 def send_photo(filename):

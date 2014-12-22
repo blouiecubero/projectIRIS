@@ -64,6 +64,7 @@ class User(UserMixin, db.Model):
     posts = db.relationship('Post', backref='author', lazy ='dynamic')
     avatar_hash = db.Column(db.String(32))
     filename = db.Column(db.String(64))
+    stored_file = db.relationship('FileBase', backref='owner', lazy ='dynamic')
     picture = db.Column(db.String(64))
 
     def __init__(self, **kwargs):
@@ -193,4 +194,10 @@ class Post(db.Model):
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-
+class FileBase(db.Model):
+    __tablename__ = 'files'
+    id = db.Column(db.Integer, primary_key=True)
+    description = db.Column(db.Text)
+    date = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    user = db.Column(db.Integer, db.ForeignKey('users.id'))
+    filename = db.Column(db.String(64))
