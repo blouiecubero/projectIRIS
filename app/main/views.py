@@ -30,6 +30,20 @@ def allowed_files(filename):
 def homepage():
     return render_template('home.html')
 
+class Store_Users():
+    stored_user = ""
+
+    def store(self, name):
+        self.stored_user = name
+        return self.stored_user
+
+    def check_if_none(self):
+        if self.stored_user == "":
+            self.stored_user = "louie.cubero"
+            return self.stored_user
+        return self.stored_user
+
+store_user = Store_Users()
 
 @main.route('/index', methods=['GET', 'POST'])
 def index():
@@ -45,18 +59,57 @@ def index():
         return redirect(url_for('.index'))
     posts = Post.query.order_by(Post.timestamp.desc()).all()
     return render_template('index.html', form=form, posts=posts, filename=picture)
+    
 
-
-@main.route('/user/<username>')
-def user(username):
-    user = User.query.filter_by(username=username).first()
+@main.route('/admin-user', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def admin_user():
+    user_file = store_user.check_if_none()
+    user = User.query.filter_by(username=current_user.username).first()
+    file_owner = User.query.filter_by(username=user_file).first()
+    all_users = User.query.all()
     if user.picture is None:
         user.picture = 'images.jpg'
     if user is None:
         abort(404)
     posts = user.posts.order_by(Post.timestamp.desc()).all()
     picture = 'http://127.0.0.1:5000/uploads/photos/' + user.picture
-    return render_template('user.html', user=user,posts=posts, filename=picture)
+    finance = file_owner.stored_file.order_by(FileBase.date.desc()).all()
+    if request.method == 'POST':
+        if request.form['button'] == 'Choose User':
+            wcuser = request.form['users']
+            store_user.store(wcuser)
+            return redirect(url_for('.admin_user'))
+        elif request.form['button'] == 'Upload':
+            file = request.files['upload']
+            wcuser = request.form['users']
+            desc = request.form['description']
+            if file and allowed_files(file.filename):
+                file_name = secure_filename(file.filename)
+                userid = User.query.filter_by(username=wcuser).first()
+                user = FileBase(owner = userid, filename = file_name, description = desc)
+                db.session.add(user)
+                file.save(os.path.join(c.FILES_FOLDER, file_name))
+                return redirect(url_for('.admin_user'))
+    return render_template('user.html', user=user, filename=picture,finance = finance, all_users=all_users, whosuser = user_file)
+    
+
+
+@main.route('/user/', methods=['GET', 'POST'])
+@login_required
+def user():
+    if current_user.is_administrator():
+        return redirect(url_for('main.admin_user'))
+    user = User.query.filter_by(username=current_user.username).first()
+    if user.picture is None:
+        user.picture = 'images.jpg'
+    if user is None:
+        abort(404)
+    posts = user.posts.order_by(Post.timestamp.desc()).all()
+    picture = 'http://127.0.0.1:5000/uploads/photos/' + user.picture
+    finance = user.stored_file.order_by(FileBase.date.desc()).all()
+    return render_template('user.html', user=user,posts=posts, filename=picture, finance = finance, whosuser = user.username)
 
 @main.route('/edit-profile', methods=['GET','POST'])
 @login_required
@@ -138,12 +191,21 @@ def upload_finance():
         desc = request.form['description']
         if file and allowed_files(file.filename):
             file_name = secure_filename(file.filename)
-            userid = user = User.query.filter_by(username=wcuser).first()
+            userid = User.query.filter_by(username=wcuser).first()
             user = FileBase(owner = userid, filename = file_name, description = desc)
             db.session.add(user)
             file.save(os.path.join(c.FILES_FOLDER, file_name))
             return redirect(url_for('.user', username=current_user.username))
     return render_template('upload_finance.html', userquery=user)
+
+@main.route('/delete-file/<file_name>', methods=['GET', 'POST'])
+@login_required
+def delete_file(file_name):
+    userid = User.query.filter_by(username=wcuser).first()
+    user = FileBase(owner = userid, filename = file_name, description = desc)
+    db.session.delete(user)
+    os.remove(c.FILES_FOLDER + file_name)
+    return redirect(url_for('.user', username=current_user.username))
 
 @main.route('/filebase-user/', methods=['GET', 'POST'])
 @login_required
