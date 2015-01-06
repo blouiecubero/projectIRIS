@@ -1,3 +1,5 @@
+## This program is run with a blueprint in it to make it more organized.
+
 from flask import Flask
 from flask.ext.bootstrap import Bootstrap
 from flask.ext.mail import Mail
@@ -9,6 +11,7 @@ from flask.ext.storage import get_default_storage_class
 from flask.ext.uploads import init
 import os
 
+## Extensions Defined.
 bootstrap = Bootstrap()
 mail = Mail()
 moment = Moment()
@@ -17,6 +20,10 @@ db = SQLAlchemy()
 login_manager = LoginManager()
 login_manager.session_protection = 'strong'
 login_manager.login_view = 'auth.login'
+
+
+## Extensions initialized. (This is the function that initialized and imported
+## all the listed configurations and extensions to be used in the program.
 
 def create_app(config_name):
     app = Flask(__name__)
@@ -28,7 +35,7 @@ def create_app(config_name):
     db.init_app(app)
     login_manager.init_app(app)
 
-    
+## The following code is for blueprinting.
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
 

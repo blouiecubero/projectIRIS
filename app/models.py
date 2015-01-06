@@ -1,3 +1,7 @@
+## This py file serves as the database of the program. This is where all tables
+## and columns are initialized. As you can see, this program utilizes an 
+## ORM (Object Relational Mapping), and uses SQLite as the main database.
+
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
@@ -7,15 +11,22 @@ from . import db, login_manager
 from hashlib import md5
 import hashlib
 
+
 class Permission:
-    FOLLOW = 0x01
-    COMMENT = 0x02
-    WRITE_ARTICLES = 0x04
-    MODERATE_COMMENTS = 0x08
+    
+    ## This class initializes the permissions that will be imposed on specific Roles.
+    ## As you can see, the permissions are initialized in a hexadecimal value.
+    
+    VIEW_FILES = 0x01
     ADMINISTER = 0x80
 
 
+
 class Role(db.Model):
+
+    ## This *Role* class serves as the table that initializes all the Roles that
+    ## has been established in this program. The permission of all its Role are based from the Permission class.
+    
     __tablename__ = 'roles'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True)
@@ -23,18 +34,18 @@ class Role(db.Model):
     permissions = db.Column(db.Integer)
     users = db.relationship('User', backref='role', lazy='dynamic')
 
+    ## There are 2 kinds of role that are used. The User and the Administrator.
+    ## The permission of the user is to only view files, while the admin can perform
+    ## higher duties, such as uploading or deleting a file from a specific user.
+    
     @staticmethod
     def insert_roles():
         roles = {
-            'User': (Permission.FOLLOW |
-                     Permission.COMMENT |
-                     Permission.WRITE_ARTICLES, True),
-            'Moderator': (Permission.FOLLOW |
-                          Permission.COMMENT |
-                          Permission.WRITE_ARTICLES |
-                          Permission.MODERATE_COMMENTS, False),
+            'User': (Permission.VIEW_FILES, True),
             'Administrator': (0xff, False)
         }
+        
+    ## The purpose of this for loop is to assign the permission to its specific Roles.
         for r in roles:
             role = Role.query.filter_by(name=r).first()
             if role is None:
@@ -48,7 +59,11 @@ class Role(db.Model):
         return '<Role %r>' % self.name
 
 
+
 class User(UserMixin, db.Model):
+
+    ## The function of the User table is to record all the Users registered and its specific attributes.
+    
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(64), unique=True, index=True)
@@ -61,12 +76,11 @@ class User(UserMixin, db.Model):
     about_me = db.Column(db.Text())
     member_since = db.Column(db.DateTime(), default=datetime.utcnow)
     last_seen = db.Column(db.DateTime(), default=datetime.utcnow)
-    posts = db.relationship('Post', backref='author', lazy ='dynamic')
-    avatar_hash = db.Column(db.String(32))
     filename = db.Column(db.String(64))
     stored_file = db.relationship('FileBase', backref='owner', lazy ='dynamic')
     picture = db.Column(db.String(64))
 
+    ## This function checks if the registered user is an admin. It's reference and basis is listed from the root:/config.py file.
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
         if self.role is None:
@@ -74,25 +88,31 @@ class User(UserMixin, db.Model):
                 self.role = Role.query.filter_by(permissions=0xff).first()
             if self.role is None:
                 self.role = Role.query.filter_by(default=True).first()
-        if self.email is not None and self.avatar_hash is None:
-            self.avatar_hash = hashlib.md5(
-                self.email.encode('utf-8')).hexdigest()
 
+    ## This function checks if the password is tried to be read. 
     @property
     def password(self):
         raise AttributeError('password is not a readable attribute')
 
+    ## This function generates a password hash so eliminate the chances of
+    ## easily getting it.
     @password.setter
     def password(self, password):
         self.password_hash = generate_password_hash(password)
 
+    ## This function verifies if the password matches to its generated_hash
+    ## Since if the old hash can be used to procured the password, then there's
+    ## no point of hashing the password at all. Therefore, it's hash is always
+    ## new and unique.
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    ## This function generates a confirmation token.
     def generate_confirmation_token(self, expiration=3600):
         s = Serializer(current_app.config['SECRET_KEY'], expiration)
         return s.dumps({'confirm': self.id})
 
+    ## This function checks if the user has already confirmed its account.
     def confirm(self, token):
         s = Serializer(current_app.config['SECRET_KEY'])
         try:
@@ -104,11 +124,13 @@ class User(UserMixin, db.Model):
         self.confirmed = True
         db.session.add(self)
         return True
-
+    ## This function generates another token. It's different from the first
+    ## token generator to eliminate redundancy and maintain clarity.
     def generate_reset_token(self, expiration=3600):
         s = Serializer(current_app.config['SECRET_KEY'], expiration)
         return s.dumps({'reset': self.id})
 
+    ## This function 
     def reset_password(self, token, new_password):
         s = Serializer(current_app.config['SECRET_KEY'])
         try:
@@ -155,18 +177,6 @@ class User(UserMixin, db.Model):
         self.last_seen = datetime.utcnow()
         db.session.add(self)
 
-    def gravatar(self, size=100, default='mm', rating='g'):
-        if request.is_secure:
-            url = 'https://secure.gravatar.com/avatar'
-        else:
-            url = 'http://www.gravatar.com/avatar'
-        hash = self.avatar_hash or hashlib.md5(
-            self.email.encode('utf-8')).hexdigest()
-        return '{url}/{hash}?s={size}&d={default}&r={rating}'.format(
-            url=url, hash=hash, size=size, default=default, rating=rating)
-##    return 'http://www.gravatar.com/avatar/%s?d=mm&s=%d' % (md5(self.email.encode('utf-8')).hexdigest(), size)
-
-
     def __repr__(self):
         return '<User %r>' % self.username
 
@@ -187,12 +197,6 @@ login_manager.anonymous_user = AnonymousUser
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-class Post(db.Model):
-    __tablename__ = 'posts'
-    id = db.Column(db.Integer, primary_key=True)
-    body = db.Column(db.Text)
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
 class FileBase(db.Model):
     __tablename__ = 'files'
@@ -201,3 +205,6 @@ class FileBase(db.Model):
     date = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user = db.Column(db.Integer, db.ForeignKey('users.id'))
     filename = db.Column(db.String(64))
+
+    def __repr__(self):
+        return self.filename + ' '

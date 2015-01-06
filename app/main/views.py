@@ -1,16 +1,14 @@
 from datetime import datetime
 from flask import render_template, session,send_from_directory, redirect, url_for, current_app, flash, request
 from . import main
-from .forms import NameForm, EditProfileForm, PostForm, EditProfileAdminForm, EditUserNameForm, FinanceForm
+from .forms import NameForm, EditProfileForm, EditProfileAdminForm, EditUserNameForm, FinanceForm, PostForm
 from .. import db
-from ..models import Permission, Role, User, Post, FileBase
+from ..models import Permission, Role, User, FileBase
 from flask.ext.login import login_user, logout_user, login_required, current_user
 from ..decorators import admin_required
 from werkzeug import secure_filename
 import os
 from config import Config
-from flask.ext.storage import get_default_storage_class
-from flask.ext.uploads import init
 from flask.ext.uploads import delete, save, Upload
 import sys
 c = Config()
@@ -48,17 +46,7 @@ store_user = Store_Users()
 @main.route('/index', methods=['GET', 'POST'])
 def index():
     form = PostForm()
-    if current_user.picture is None:
-        current_user.picture = 'images.jpg'
-    picture = 'http://127.0.0.1:5000/uploads/photos/' + current_user.picture
-    if current_user.can(Permission.WRITE_ARTICLES) and \
-            form.validate_on_submit():
-        post = Post(body=form.body.data,
-                    author=current_user._get_current_object())
-        db.session.add(post)
-        return redirect(url_for('.index'))
-    posts = Post.query.order_by(Post.timestamp.desc()).all()
-    return render_template('index.html', form=form, posts=posts, filename=picture)
+    return render_template('index.html', form=form)
     
 
 @main.route('/admin-user', methods=['GET', 'POST'])
@@ -73,7 +61,6 @@ def admin_user():
         user.picture = 'images.jpg'
     if user is None:
         abort(404)
-    posts = user.posts.order_by(Post.timestamp.desc()).all()
     picture = 'http://127.0.0.1:5000/uploads/photos/' + user.picture
     finance = file_owner.stored_file.order_by(FileBase.date.desc()).all()
     if request.method == 'POST':
@@ -106,10 +93,9 @@ def user():
         user.picture = 'images.jpg'
     if user is None:
         abort(404)
-    posts = user.posts.order_by(Post.timestamp.desc()).all()
     picture = 'http://127.0.0.1:5000/uploads/photos/' + user.picture
     finance = user.stored_file.order_by(FileBase.date.desc()).all()
-    return render_template('user.html', user=user,posts=posts, filename=picture, finance = finance, whosuser = user.username)
+    return render_template('user.html', user=user, filename=picture, finance = finance, whosuser = user.username)
 
 @main.route('/edit-profile', methods=['GET','POST'])
 @login_required
@@ -201,10 +187,9 @@ def upload_finance():
 @main.route('/delete-file/<file_name>', methods=['GET', 'POST'])
 @login_required
 def delete_file(file_name):
-    userid = User.query.filter_by(username=wcuser).first()
-    user = FileBase(owner = userid, filename = file_name, description = desc)
+    user = FileBase.query.filter_by(filename=file_name).first()
     db.session.delete(user)
-    os.remove(c.FILES_FOLDER + file_name)
+    os.remove(c.FILES_FOLDER +'/'+ file_name)
     return redirect(url_for('.user', username=current_user.username))
 
 @main.route('/filebase-user/', methods=['GET', 'POST'])
