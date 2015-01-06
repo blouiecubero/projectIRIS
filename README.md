@@ -27,7 +27,10 @@ and type this command in CMD:
 
 X:/ python manage.py runserver
 
+Where X: The address of the cloned project + with the flask extensions inside
+
 Contact
 =======
 If you have any concern, just email me at:
 blouiecubero@gmail.com
+

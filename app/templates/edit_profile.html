@@ -1,3 +1,4 @@
+
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 
@@ -8,6 +9,6 @@
     <h1>Edit Profile</h1>
 </div>
 <div class="col-md-4">
-    {{ wtf.quick_form(form) }}
+    {{ wtf.quick_form(form) }} <!--Loads form provided by wtforms.-->
 </div>
 {% endblock %}
