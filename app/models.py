@@ -11,7 +11,6 @@ from . import db, login_manager
 from hashlib import md5
 import hashlib
 
-
 class Permission:
     
     ## This class initializes the permissions that will be imposed on specific Roles.
@@ -57,7 +56,6 @@ class Role(db.Model):
 
     def __repr__(self):
         return '<Role %r>' % self.name
-
 
 
 class User(UserMixin, db.Model):
@@ -190,9 +188,6 @@ class AnonymousUser(AnonymousUserMixin):
     
 login_manager.anonymous_user = AnonymousUser    
     
-                      
-
-
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))

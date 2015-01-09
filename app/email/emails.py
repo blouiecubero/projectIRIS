@@ -3,7 +3,8 @@
 from threading import Thread
 from flask import current_app, render_template
 from flask.ext.mail import Message
-from . import mail
+from .. import mail
+from . import email
 
 ## This function makes the program asynchronous in sending emails.
 ## It means that the program can now send emails while doing something else

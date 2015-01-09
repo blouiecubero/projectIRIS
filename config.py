@@ -13,14 +13,18 @@ class Config:
     FLASKY_MAIL_SUBJECT_PREFIX = '[Flasky]'
     FLASKY_MAIL_SENDER = 'blouiecubero@gmail.com'
     FLASKY_ADMIN = 'blouiecubero@gmail.com'
-    FILES_FOLDER = '/Users/LouieCubero/My Documents/GitHub/Flasky3/static/FILES'
-    PICTURE_FOLDER = '/Users/LouieCubero/My Documents/GitHub/Flasky3/static/PICTURES'
+    FILES_FOLDER = '/Users/LouieCubero/My Documents/GitHub/Flasky5/static/FILES/'
+    PICTURE_FOLDER = '/Users/LouieCubero/My Documents/GitHub/Flasky5/static/PICTURES/'
     FILE_SYSTEM_STORAGE_FILE_VIEW = 'static'
     DEFAULT_FILE_STORAGE = 'filesystem'
     ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'JPG'])
+    ALLOWED_PICTURES = set(['png', 'jpg', 'jpeg', 'gif', 'JPG', 'ico'])
+    ALLOWED_DOCUMENTS = set(['pdf','PDF'])
     @staticmethod
     def init_app(app):
         pass
+
+ 
 
 #Initialization of the database.
 

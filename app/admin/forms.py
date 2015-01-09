@@ -1,3 +1,5 @@
+## This is where all the forms that will be used in the main blueprint
+## will be stored.
 from flask.ext.wtf import Form
 from wtforms import StringField, TextAreaField, BooleanField, SelectField,\
     SubmitField
@@ -9,26 +11,6 @@ from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from wtforms.ext.sqlalchemy.orm import model_form
 from ..models import User
 
-def enabled_categories():
-    return User.query.all()
-
-class NameForm(Form):
-    name = StringField('What is your name?', validators=[Required()])
-    submit = SubmitField('Submit')
-
-
-class EditProfileForm(Form):
-    name = StringField('Real name', validators=[Length(0, 64)])
-    location = StringField('Location', validators=[Length(0, 64)])
-    about_me = TextAreaField('About me')
-    submit = SubmitField('Submit')
-
-class EditUserNameForm(Form):
-    username = StringField('Username', validators=[
-        Required(), Length(1, 64), Regexp('^[A-Za-z][A-Za-z0-9_.]*$', 0,
-                                          'Usernames must have only letters, '
-                                          'numbers, dots or underscores')])
-    submit = SubmitField('Submit')
 
 class EditProfileAdminForm(Form):
     email = StringField('Email', validators=[Required(), Length(1, 64),
@@ -60,11 +42,3 @@ class EditProfileAdminForm(Form):
                 User.query.filter_by(username=field.data).first():
             raise ValidationError('Username already in use.')
 
-class PostForm(Form):
-    body = TextAreaField("What's on your mind?", validators=[Required()])
-    submit = SubmitField('Submit')
-
-class FinanceForm(Form):
-    users = QuerySelectField(query_factory=enabled_categories)
-    files = FileField('Upload File', validators=[FileRequired(), FileAllowed(['PDF', 'pdf'], 'Images only!')])
-    submit = SubmitField('Submit')

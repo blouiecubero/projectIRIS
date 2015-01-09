@@ -2,7 +2,6 @@
 
 {% block title %}Flasky{% endblock %}
 
-<!--shows the icon--> 
 {% block head %}
 {{ super() }}
 <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
@@ -10,7 +9,6 @@
 {% endblock %}
 
 {% block navbar %}
-<!--This is for the toolbar block-->
 <div class="navbar navbar-inverse" role="navigation">
     <div class="container">
         <div class="navbar-header">
@@ -22,25 +20,26 @@
             </button>
             <a class="navbar-brand" href="/">Flasky</a>
         </div>
-		
         <div class="navbar-collapse collapse">
-			<!--The following code will only show up if and only if the user was currently logged in.-->
 			{% if current_user.is_authenticated() %}
             <ul class="nav navbar-nav">
                 <li><a href="/index">Home</a></li>
             </ul>
 			{% endif %}
-			
-			<!--The following code will only show up if and only if the user was currently logged in.-->
 			<ul class="nav navbar-nav navbar-right">
 				{% if current_user.is_authenticated() %}
 				<li class="dropdown">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown">Account <b class="caret"></b></a>
 					<ul class="dropdown-menu">
-						<li><a href="{{ url_for('auth.logout') }}">Sign Out</a></li>
-						<li><a href="{{ url_for('main.user', username=current_user.username, filename=filename)}}">Profile</a></li>
-						<li><a href="{{ url_for('main.edit_username') }}">Edit Username</a></li>
+						{% if current_user.is_administrator() %}
+						<li><a href="{{ url_for('admin.admin_user', username=current_user.username)}}">Profile</a></li>
+						{% endif %}
+						{% if not current_user.is_administrator() %}
+						<li><a href="{{ url_for('users.user', username=current_user.username)}}">Profile</a></li>
+						<li><a href="{{ url_for('users.edit_username') }}">Edit Username</a></li>
+						{% endif %}
 						<li><a href="{{ url_for('auth.change_password') }}">Change Password</a></li>
+						<li><a href="{{ url_for('auth.logout') }}">Sign Out</a></li>
 					</ul>
 				</li>
 				{% else %}
@@ -48,23 +47,20 @@
 				{% endif %}
 			</ul>
         </div>
-		
     </div>
 </div>
 {% endblock %}
 
 {% block content %}
-
 <div class="container">
-	<!--If ever there will be flash messages to be thrown by the code, this will be the code that would handle that.-->
     {% for message in get_flashed_messages() %}
     <div class="alert alert-warning">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
         {{ message }}
     </div>
     {% endfor %}
+
     {% block page_content %}{% endblock %}
-	
 </div>
 {% endblock %}
 

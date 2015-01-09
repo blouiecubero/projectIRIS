@@ -1,212 +1,30 @@
-from datetime import datetime
-from flask import render_template, session,send_from_directory, redirect, url_for, current_app, flash, request
+from flask import render_template, send_from_directory, current_app
 from . import main
-from .forms import NameForm, EditProfileForm, EditProfileAdminForm, EditUserNameForm, FinanceForm, PostForm
-from .. import db
-from ..models import Permission, Role, User, FileBase
-from flask.ext.login import login_user, logout_user, login_required, current_user
-from ..decorators import admin_required
-from werkzeug import secure_filename
-import os
-from config import Config
-from flask.ext.uploads import delete, save, Upload
-import sys
-c = Config()
-
-ALLOWED_PICTURES = set(['png', 'jpg', 'jpeg', 'gif', 'JPG', 'ico'])
-ALLOWED_DOCUMENTS = set(['pdf','PDF'])
-
-def allowed_pic(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1] in ALLOWED_PICTURES
-
-def allowed_files(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1] in ALLOWED_DOCUMENTS
+from flask.ext.login import login_required, current_user
 
 @main.route('/', methods=['GET', 'POST'])
+@login_required
 def homepage():
+    ## This is the same as the index page. Kept it here if ever there will be a homepage.
     return render_template('home.html')
 
-class Store_Users():
-    stored_user = ""
-
-    def store(self, name):
-        self.stored_user = name
-        return self.stored_user
-
-    def check_if_none(self):
-        if self.stored_user == "":
-            self.stored_user = "louie.cubero"
-            return self.stored_user
-        return self.stored_user
-
-store_user = Store_Users()
-
 @main.route('/index', methods=['GET', 'POST'])
+@login_required
 def index():
-    form = PostForm()
-    return render_template('index.html', form=form)
-    
+    ## Same as the homepage, but there's a strong possibility that the homepage will be differentiated
+    ## from the index page. Hence, it's kept this way for further changes. 
+    return render_template('index.html')
 
-@main.route('/admin-user', methods=['GET', 'POST'])
-@login_required
-@admin_required
-def admin_user():
-    user_file = store_user.check_if_none()
-    user = User.query.filter_by(username=current_user.username).first()
-    file_owner = User.query.filter_by(username=user_file).first()
-    all_users = User.query.all()
-    if user.picture is None:
-        user.picture = 'images.jpg'
-    if user is None:
-        abort(404)
-    picture = 'http://127.0.0.1:5000/uploads/photos/' + user.picture
-    finance = file_owner.stored_file.order_by(FileBase.date.desc()).all()
-    if request.method == 'POST':
-        if request.form['button'] == 'Choose User':
-            wcuser = request.form['users']
-            store_user.store(wcuser)
-            return redirect(url_for('.admin_user'))
-        elif request.form['button'] == 'Upload':
-            file = request.files['upload']
-            wcuser = request.form['users']
-            desc = request.form['description']
-            if file and allowed_files(file.filename):
-                file_name = secure_filename(file.filename)
-                userid = User.query.filter_by(username=wcuser).first()
-                user = FileBase(owner = userid, filename = file_name, description = desc)
-                db.session.add(user)
-                file.save(os.path.join(c.FILES_FOLDER, file_name))
-                return redirect(url_for('.admin_user'))
-    return render_template('user.html', user=user, filename=picture,finance = finance, all_users=all_users, whosuser = user_file)
-    
-
-
-@main.route('/user/', methods=['GET', 'POST'])
-@login_required
-def user():
-    if current_user.is_administrator():
-        return redirect(url_for('main.admin_user'))
-    user = User.query.filter_by(username=current_user.username).first()
-    if user.picture is None:
-        user.picture = 'images.jpg'
-    if user is None:
-        abort(404)
-    picture = 'http://127.0.0.1:5000/uploads/photos/' + user.picture
-    finance = user.stored_file.order_by(FileBase.date.desc()).all()
-    return render_template('user.html', user=user, filename=picture, finance = finance, whosuser = user.username)
-
-@main.route('/edit-profile', methods=['GET','POST'])
-@login_required
-def edit_profile():
-    form = EditProfileForm()
-    if form.validate_on_submit():
-        current_user.location = form.location.data
-        current_user.about_me = form.about_me.data
-        db.session.add(current_user)
-        flash('Your profile has been updated.')
-        return redirect(url_for('.user', username=current_user.username))
-    form.name.data= current_user.name
-    form.location.data = current_user.location
-    form.about_me.data = current_user.about_me
-    return render_template('edit_profile.html', form=form)
-
-@main.route('/edit-username', methods=['GET','POST'])
-@login_required
-def edit_username():
-    form = EditUserNameForm()
-    if form.validate_on_submit():
-        current_user.username = form.username.data
-        db.session.add(current_user)
-        flash('Your username has been updated.')
-        return redirect(url_for('.user', username=current_user.username))
-    form.username.data= current_user.username
-    return render_template('edit_username.html', form=form)
-
-
-@main.route('/edit-profile/<int:id>', methods=['GET', 'POST'])
-@login_required
-@admin_required
-def edit_profile_admin(id):
-    user = User.query.get_or_404(id)
-    form = EditProfileAdminForm(user=user)
-    if form.validate_on_submit():
-        user.email = form.email.data
-        user.username = form.username.data
-        user.confirmed = form.confirmed.data
-        user.role = Role.query.get(form.role.data)
-        user.name = form.name.data
-        user.location = form.location.data
-        user.about_me = form.about_me.data
-        db.session.add(user)
-        flash('The profile has been updated.')
-        return redirect(url_for('.user', username = user.username))
-    form.email.data = user.email
-    form.username.data = user.username
-    form.confirmed.data = user.confirmed
-    form.role.data = user.role_id
-    form.name.data = user.name
-    form.location.data = user.location
-    form.about_me.data = user.about_me
-    return render_template('edit_profile.html', form=form, user=user)
-    
-
-@main.route('/edit-picture/', methods=['GET', 'POST'])
-@login_required
-def upload_picture():
-    user = User.query.filter_by(username=current_user.username).first()
-    if request.method == 'POST':
-        file = request.files['upload']
-        if file and allowed_pic(file.filename):
-            filename = secure_filename(file.filename)
-            user.picture = filename
-            file.save(os.path.join(c.PICTURE_FOLDER, filename))
-            db.session.add(user)
-            return redirect(url_for('.user', username=user.username))
-    return render_template('upload_picture.html')
-
-@main.route('/upload-finance', methods = ['GET', 'POST'])
-@login_required
-@admin_required
-def upload_finance():
-    user = User.query.all()
-    if request.method == 'POST':
-        file = request.files['upload']
-        wcuser = request.form['users']
-        desc = request.form['description']
-        if file and allowed_files(file.filename):
-            file_name = secure_filename(file.filename)
-            userid = User.query.filter_by(username=wcuser).first()
-            user = FileBase(owner = userid, filename = file_name, description = desc)
-            db.session.add(user)
-            file.save(os.path.join(c.FILES_FOLDER, file_name))
-            return redirect(url_for('.user', username=current_user.username))
-    return render_template('upload_finance.html', userquery=user)
-
-@main.route('/delete-file/<file_name>', methods=['GET', 'POST'])
-@login_required
-def delete_file(file_name):
-    user = FileBase.query.filter_by(filename=file_name).first()
-    db.session.delete(user)
-    os.remove(c.FILES_FOLDER +'/'+ file_name)
-    return redirect(url_for('.user', username=current_user.username))
-
-@main.route('/filebase-user/', methods=['GET', 'POST'])
-@login_required
-def list_of_finance():
-    user = User.query.filter_by(username=current_user.username).first()
-    finance = user.stored_file.order_by(FileBase.date.desc()).all()
-    return render_template('_filebase.html', finance = finance)
-    
 
 @main.route('/uploads/photos/<filename>')
 def send_photo(filename):
-    return send_from_directory(c.PICTURE_FOLDER, filename)
+    ## Displays photos in the browser
+    return send_from_directory(current_app.config['PICTURE_FOLDER'], filename)
 
 @main.route('/uploads/files/<filename>')
 def send_file(filename):
-    return send_from_directory(c.FILES_FOLDER, filename)
+    ## Displays files in the browser
+    return send_from_directory(current_app.config['FILES_FOLDER'], filename)
 
 
 

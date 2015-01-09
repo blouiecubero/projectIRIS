@@ -39,9 +39,21 @@ def create_app(config_name):
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
 
+    from .decorators import decorators as decorators_blueprint
+    app.register_blueprint(decorators_blueprint)
+
+    from .email import email as email_blueprint
+    app.register_blueprint(email_blueprint)
+    
+
     from .auth import auth as auth_blueprint
     app.register_blueprint(auth_blueprint, url_prefix='/auth')
-    
+
+    from .admin import admin as admin_blueprint
+    app.register_blueprint(admin_blueprint, url_prefix='/admin')
+
+    from .users import users as users_blueprint
+    app.register_blueprint(users_blueprint, url_prefix='/users')
 
     return app
 

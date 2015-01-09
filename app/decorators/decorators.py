@@ -4,7 +4,8 @@
 from functools import wraps
 from flask import abort
 from flask.ext.login import current_user
-from .models import Permission
+from ..models import Permission
+from . import decorators
 
 
 ##This decorator checks if the user has the permission
