@@ -1,0 +1,93 @@
+{% extends "layoutproj.html"%}
+{% block body %}
+	<div class="navigation">
+		<div class="menuBar">
+			<ul class="nav">
+				<li><a href="{{ url_for('show_home') }}">Home</a></li>
+				<li><a href="{{ url_for('show_project') }}">Project</a></li>
+				<li><a href="#">Caps</a></li>
+				<li><a href="#">Logs</a></li>
+				<li><a href="#">Feedback</a></li>
+				<li style="float:right;"><a href="{{ url_for('logout') }}">Logout from Iris</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="mainContainer">
+		<div class="leftCol">
+			<div class="profilebox"></div>
+			<div class="projectsContainer">
+				<ul id="projectNav">
+					<li>
+						<div class="projectItem">
+							<a href="#"><h4>Jane Cruz</h4></a>
+							<a><h4>Project Manager</h4></a>
+							<div><a>3 tasks</a></div>
+							<div>75 hours</div>
+						</div>
+					</li>
+					<li>
+						<div class="projectItem">
+							<a href="#">John Lemon</a>
+							<a><h4>Team Lead</h4></a>
+							<div><a>7 tasks</a></div>
+							<div>128 hours</div>
+						</div>
+					</li>
+					<li>
+						<div class="projectItem">
+							<a href="#">Chris Brock</a>
+							<a><h4>Developer</h4></a>
+							<div><a>8 tasks</a></div>
+							<div>156 hours</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="mainContent">
+			<div class="upperContent">
+				<div id="detailsBox">
+					<div class="nickname">Waitlifter</div>
+					<div id="statBox">
+						<ul>
+							<li><div class="projBar1">40% finished</div></li>
+							<li><div>2.5 hours delayed</div></li>
+							<li><div>80 points received</div></li>
+						</ul>
+					</div>
+				</div>
+				<div id="appointBox">
+					<ul id="appointList">
+						<li>Sep 27</li>
+						<li>Oct 15</li>
+					</ul>
+				</div>
+			</div>
+			<div class="newsContainer">
+				<div class="addContent"><a> Create task + </a></div>
+				<h4 style="margin-left:0; font-weight:normal;">Time Logs:</h4>
+				<div class="feed">
+					<div class="headBar"><a href="#">Market Research</a> by Chris Brock </div>
+					<div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in ultricies lectus, et venenatis justo.</div>
+					<div></div>
+				</div>
+
+				<div class="feed">
+					<div class="headBar"><a href="#">Market Research</a> by Chris Brock </div>
+					<div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in ultricies lectus, et venenatis justo. Sed scelerisque, lectus sit amet imperdiet egestas, libero quam efficitur felis, vel faucibus eros ante in mauris. </div>
+				</div>
+			</div>
+		</div>
+		<div class="rightCol">
+			<div id="capContainer">
+				<ul>
+					<li><div class="capBox">Prof</div></li>
+					<li><div class="capBox">Student</div></li>
+					<li><div class="capBox">Collector</div></li>
+					<li><div class="capBox">Tutor</div></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	
+{% endblock %}

@@ -1,0 +1,50 @@
+{% from "macros.html" import render_field %}
+<div class="modal fade" id="uploadFile" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+    	<div class="modal-content">
+      		<div class="modal-header">
+        		<button type="button" class="close" data-dismiss="modal">
+        			<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+        		</button>
+          		<h4 class="modal-title" id="myModalLabel">Upload files</h4>
+	      	</div>
+	      	<div class="modal-body">
+				
+							
+	      		<form role="form" action="{{url_for('Filebase.upload_files')}}" method="post" enctype="multipart/form-data">
+					<h4>Select user:</h4>
+					<select name="users", onchange="myFunction()">
+								{% for user in all_users %}
+								<option value={{ user.username }}>{{user.username}}</option>
+								{% endfor %}
+					</select>
+				 	{{ render_field(upload_file_form.files, placeholder="Image", autofocus="", accept="file_extension") }}
+			        <div class="modal-footer">
+				        <!--button type="button" class="btn btn-default" data-dismiss="modal">Close</button-->
+				        <button type="submit" class="btn btn-primary">Upload</button>
+				    </div>
+		    	</form>
+				
+	      </div>
+    	</div>
+  	</div>
+</div>
+
+<div class="modal fade" id="uploadComplete" tabindex="-1" role="dialog" aria-labelledby="MyModalTitle" aria-hidden="true">
+	<div class="modal-dialog">
+    	<div class="modal-content">
+      		<div class="modal-header">
+        		<button type="button" class="close" data-dismiss="modal">
+        			<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+        		</button>
+          		<h4 class="modal-title" id="myModalLabel">Modal title</h4>
+	      	</div>
+	      	<div class="modal-body">
+	      		Ayan, okay na
+		    	<div class="modal-footer">
+			        <button type="button" class="btn btn-default" data-dismiss="modal">Yey</button>
+			    </div>
+	      </div>  
+    	</div>
+  	</div>
+</div>

@@ -1,0 +1,10 @@
+{% if current_user.username == 'louie.cubero' %}
+<div class="leftCol">
+		<div class= "editProfilePicture" data-toggle="modal" data-target="#uploadFile">
+			<!--a href="#"-->
+			<img src="{{url_for('static', filename='assets/images/up.png') }}"/>
+			<span>Upload File</span>
+		</div>
+</div>
+{% endif %}
+

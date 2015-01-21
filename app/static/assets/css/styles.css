@@ -1,0 +1,291 @@
+/* Top Navigation */
+
+body{ 
+	font-family: arial, tahoma;
+	background: none repeat scroll 0 0 #eee;
+}
+
+.page{
+	background: none repeat scroll 0 0 white;
+	width: 80%;
+	height: 600px;
+	margin: 0 auto;
+	border: 1px solid #ccc;
+}
+
+.loginContainer{ 
+	background: none repeat scroll 0 0 white;
+	border: 5px solid #ccc;
+	margin: 2em auto;
+	width: 30em;
+	height: 25em;
+	padding: 1em;
+}
+
+.navigation{
+	margin: 0;
+	padding: 0;
+	clear: both;
+}
+
+.menuBar{
+	margin: 25px auto;
+	width: 90%;
+	background: none repeat scroll 0 0 #fafafa;
+	height: 42px;
+}
+
+a {
+	text-decoration: none;
+	color: #000000;
+}
+
+
+#errors {
+    border-left: 5px solid #a94442;
+    padding-left: 15px;
+}
+#errors li {
+    list-style-type: none;
+}
+#errors li:before {
+    content: '\b7\a0';
+}
+
+
+.mainContainer{
+	width: 90%;
+	margin: 0 auto;
+	position: relative;
+	padding-top: 20px;
+}
+
+.leftCol{
+	width: 20%;
+	float: left;
+}
+
+
+#projectNav{
+	list-style-type: none;
+	padding: 0;
+	line-height: 3
+}
+
+#projectNav li{
+	/*width: auto;*/
+}
+
+.projectItem{
+	line-height: 1;
+	margin: 15px 0;
+	font-size: 12px
+}
+
+.projectItem:hover .rate{
+	display: inline;
+}
+
+#projectNav h4{
+	margin: 0;
+	font-weight: normal;
+	padding: 0;
+}
+
+/*a.conn:hover .rate{
+	display: inline;
+}*/
+
+.rate{
+	display: none;
+}
+
+.profilePictureContainer{
+	height: 125px;
+	width: 125px;
+	position: relative;
+	border: 1px solid;
+	cursor: pointer;	
+	display: block;
+}
+
+.profilePictureContainer .editProfilePicture {
+    z-index: 2;
+    opacity: 0.3;
+	height: 30px;
+	margin-top: 95px;
+}
+
+.profilePictureContainer .editProfilePicture:hover{
+	opacity: 0.80;
+	background-color: black;
+}
+
+.profilePictureContainer .profilePicThumb{
+	-webkit-box-shadow: none;
+	margin-top: 0;
+	background: rgba(0, 0, 0, .3);
+	display: block;
+	padding: 1px;
+	position: absolute;
+	height: 100%;
+    width: 100%;
+}
+.profilePictureContainer .profilePicThumb .profilePic{
+	background-color: #fff;
+	border: 4px solid #fff;
+	-webkit-border-radius: 2px;
+	height: 100%;
+    width: 100%;
+}
+
+.profilePictureContainer .editProfilePicture a{
+	font-size: 12px;
+	color:white;
+	display: block;
+    height: 100%;
+    width: 100%;
+    text-decoration: none;
+}
+
+.profilePictureContainer .editProfilePicture a img{
+	width: 32px;
+	height: 32px;
+	margin-top: 10px;
+	margin-left: 2px;
+
+}
+
+.profilePictureContainer .editProfilePicture a span{
+	font-weight: 700;
+	color: white;
+}
+
+#statBox{
+	padding-left: 0;
+	width: 30em;
+}
+
+#statBox tr td{
+	width:10em;
+}
+
+.projectUtilizationLabel{
+	position:relative;
+	top:50%;
+}
+
+.projectUtilizationBar{
+	height:  18px;
+	font-size: 10px;
+	margin-top: 4px;
+	background:#80E6B2;
+	border: 1px solid black;
+}
+
+.projBar1{
+	height: 18px;
+	background: #FFCC99;
+	margin-top: 2px;
+	width: 150px;
+}
+
+.projBar2{
+	height: 18px;
+	background: #80E6B2;
+	margin-top: 2px;
+	width: 40px;
+}
+
+.projBar3{
+	height: 18px;
+	background: #33CCFF;
+	margin-top: 2px;
+	width: 80px;
+}
+
+.mainContent{
+	float: left;
+	width:50%;
+}
+
+.upperContent{
+	width: 100%;
+	min-height: 140px;
+}
+
+#detailsBox{
+	float: left;
+	width: 50%;
+}
+
+#appointList{
+	float: left;
+	list-style-type: none;
+}
+
+#appointList li{
+	float: left;
+	margin: 0 1px;
+	padding: 15px 7px;
+	border: 1px solid;
+}
+
+#appointBox{
+	float: left;
+	/*margin-left: 25px;*/
+	width: 50%;
+}
+
+.addContent{
+	margin: 0 auto;
+	width: 100%;
+	height: 20px;
+	padding: 20px 0;
+	position: relative;
+}
+
+/* Content */
+
+.newsContainer{
+	font-size: 14px;
+}
+
+.feed {
+	border: 1px solid #ccc;
+	margin: 12px 0;
+	background: none repeat scroll 0 0 white;
+}
+
+.headBar{
+	padding-bottom: 10px;
+}
+
+
+.rightCol{
+	width: 30%;
+	float: right;
+}
+
+#capContainer ul{
+	list-style-type: none;
+}
+
+.capBox{
+	float: left;
+	border: 1px solid;
+	margin: 0 1px;
+	padding: 10px 13px;
+	font-size: 11px;
+}
+
+#chatBox{ 
+	position: relative; 
+	float: left;
+	width: 80%;
+	height: 270px;
+	//border: 1px solid;
+	margin: 50px 45px;
+	background-color: rgba(128,128,128,0.1);
+	padding:10px;
+}

@@ -1,0 +1,67 @@
+{% from "macros.html" import render_field %}
+{% extends "layout.html" %}
+{% block body %}
+
+	{% include 'home/navigation.html' %}
+	{% include 'filebase/upload_file_modal_2.html' %}
+	{% include 'filebase/left_sidebar.html' %}
+	<div class="mainContent">
+			<div class="upperContent">
+				<div id="detailsBox">
+					<div class="nickname">
+						{{user.first_name + " " + user.last_name}}
+						<select>
+							<option>@WFH</option>
+							<option>@Ecotower</option>
+							<option>@Meeting</option>
+						</select>
+					</div>
+					<div id="statBox">
+						<table>
+							{% for project in utilizationProject %}
+								<tr>
+									<td>
+										<span class="projectUtilizationLabel" style="font-size:10px;">{{project.name}}</span>
+									</td>
+									<td>
+										<div class="projectUtilizationBar" style="width:{{project.percent}}%;">{{ project.percent}}%</div>
+									</td>
+								</tr>
+							{% endfor %}
+						</table>
+					</div>
+				</div>
+				<!--div id="appointBox">
+					<ul id="appointList">
+						<li>Sep 27</li>
+						<li>Oct 15</li>
+					</ul>
+				</div-->
+			</div>
+			
+	<div class="mainContainer">
+		<div class="newsContainer">
+			<form method="POST" enctype="multipart/form-data">
+					<h4 style="margin-left:0; font-weight:normal;">Select User: </h4>
+							<select name="users", onchange="myFunction()">
+								{% for user in all_users %}
+								<option value={{ user.username }}>{{user.username}}</option>
+								{% endfor %}
+							</select>
+							<input class="btn btn-default" button type="submit" name="button" value="Choose User"></button>
+			<form>
+					<h4 style="margin-left:0; font-weight:normal;">File List for {{ whosuser }}:</h4>
+						<div class="feed">
+							{% for file in filebase %}
+							<div>Filename: <a href = "http://127.0.0.1:5000/uploads/files/{{ file.filename }}">{{file.filename}}</a></div>
+							<div>Date uploaded: {{ moment(file.date).fromNow() }}</div>
+							{% if current_user.username == 'louie.cubero' %}
+							<div><a href = "{{url_for('Filebase.delete_file', file_name = file.filename) }}">Delete File</a></div>
+							{% endif %}
+							{% endfor %}
+							<div></div>
+						</div>
+	</div>
+	
+	
+{% endblock %}

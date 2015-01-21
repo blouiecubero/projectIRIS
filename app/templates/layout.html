@@ -1,0 +1,16 @@
+<!doctype html>
+<title>Iris</title>
+<head>
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/css/styles.css') }}" >
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/css/nav-bar.css') }}" >
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/css/bootstrap.min.css') }}" >
+    <script src="{{ url_for('static', filename='assets/js/jquery.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/js/bootstrap.min.js') }}"></script>
+	{% block scripts %}
+	{{ moment.include_moment() }}
+	{% endblock %}
+</head>
+<div class="page">
+	{% block body %}{% endblock %}
+</div>
+
