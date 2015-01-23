@@ -50,40 +50,14 @@
 		<form method="POST" enctype="multipart/form-data">
         <tbody>
           <tr>
-            <td>HR</td>
-            <td><input type="checkbox" name="HR 1" value="1" /></td>
-			<td><input type="checkbox" name="HR 2" value="2" /></td>
-			<td><input type="checkbox" name="HR 3" value="4" /></td>
-			<td><input type="checkbox" name="HR 4" value="8" /></td>
+		{% for emp in list_of_emp %}
+          <td>{{emp}}</td>
+            <td><input type="checkbox" name="{{emp}} 1" value="1" /></td>
+			<td><input type="checkbox" name="{{emp}} 2" value="2" /></td>
+			<td><input type="checkbox" name="{{emp}} 3" value="4" /></td>
+			<td><input type="checkbox" name="{{emp}} 4" value="8" /></td>
           </tr>
-          <tr>
-            <td>Finance</td>
-            <td><input  type="checkbox" name="Finance 1" value="1" /></td>
-			<td><input  type="checkbox" name="Finance 2" value="2" /></td>
-			<td><input  type="checkbox" name="Finance 3" value="4" /> </td>
-			<td><input  type="checkbox" name="Finance 4" value="8" /></td>
-          </tr>
-          <tr>
-            <td>Employee</td>
-            <td><input type="checkbox" name="Employee 1" value="1" /></td>
-			<td><input type="checkbox" name="Employee 2" value="2" /></td>
-			<td><input type="checkbox" name="Employee 3" value="4" /></td>
-			<td><input type="checkbox" name="Employee 4" value="8" /></td>
-          </tr>
-		  <tr>
-            <td>OJT</td>
-            <td><input type="checkbox" name="OJT 1" value="1" /> </td>
-			<td><input type="checkbox" name="OJT 2" value="2" /> </td>
-			<td><input type="checkbox" name="OJT 3" value="4" /> </td>
-			<td><input type="checkbox" name="OJT 4" value="8" /></td>
-          </tr>
-		  <tr>
-            <td>New User</td>
-            <td><input type="checkbox" name="New_User 1" value="1" /> </td>
-			<td><input type="checkbox" name="New_User 2" value="2" /> </td>
-			<td><input type="checkbox" name="New_User 3" value="4" /> </td>
-			<td><input type="checkbox" name="New_User 4" value="8" /></td>
-          </tr>
+        {% endfor %}
 		  <input class="btn btn-default" button type="submit" name="button" value="Save Roles"></button>
 	</form>
         </tbody>

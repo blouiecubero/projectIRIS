@@ -70,6 +70,7 @@ def login():
 def change_permissions():
     all_users = User.query.all()
     roles = Role.query.order_by(Role.id).all()
+    list_of_emp = ['HR','Finance','OJT','Seer','CD','CPI']
     if request.method == 'POST':
         
             if request.form['button'] == 'Update Role':
@@ -83,7 +84,6 @@ def change_permissions():
                 return redirect(url_for('Users.change_permissions'))
             
             elif request.form['button'] == 'Save Roles':
-                list_of_emp = ['HR','Finance','Employee','OJT','New_User']
                 for emp_type in list_of_emp:
                     permit = 0x00
                     for index_num in range(len(list_of_emp)):
@@ -101,7 +101,7 @@ def change_permissions():
                 flash('Permissions changed.')
                 return redirect(url_for('Users.change_permissions'))
             
-    return render_template('admin/edit_permissions.html', all_users=all_users, roles=roles, user=current_user.username)
+    return render_template('admin/edit_permissions.html',list_of_emp=list_of_emp, all_users=all_users, roles=roles, user=current_user.username)
 
 
 
