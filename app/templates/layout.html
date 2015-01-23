@@ -3,9 +3,36 @@
 <head>
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/css/styles.css') }}" >
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/css/nav-bar.css') }}" >
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/css/checkbox-sorter.css') }}" >
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/css/bootstrap.min.css') }}" >
+	
     <script src="{{ url_for('static', filename='assets/js/jquery.js') }}"></script>
     <script src="{{ url_for('static', filename='assets/js/bootstrap.min.js') }}"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="http://cdn.jsdelivr.net/jquery.cookie/1.4.0/jquery.cookie.min.js"></script>
+	<script>
+      $(":checkbox").on("change", function(){
+        var checkboxValues = {};
+        $(":checkbox").each(function(){
+          checkboxValues[this.id] = this.checked;
+        });
+        $.cookie('checkboxValues', checkboxValues, { expires: 7, path: '/' })
+      });
+
+      function repopulateCheckboxes(){
+        var checkboxValues = $.cookie('checkboxValues');
+        if(checkboxValues){
+          Object.keys(checkboxValues).forEach(function(element) {
+            var checked = checkboxValues[element];
+            $("#" + element).prop('checked', checked);
+          });
+        }
+      }
+
+      $.cookie.json = true;
+      repopulateCheckboxes();
+    
+	</script>
 	{% block scripts %}
 	{{ moment.include_moment() }}
 	{% endblock %}

@@ -1,8 +1,8 @@
 # Import Form and RecaptchaField (optional)
 from flask.ext.wtf import Form # , RecaptchaField
 
-from wtforms import TextField, PasswordField, FileField
-
+from wtforms import TextField, PasswordField, FileField, SelectField, SubmitField
+from app.users.models import Role, User
 # Import Form validators
 from wtforms.validators import Required, Email, EqualTo
 
@@ -19,4 +19,5 @@ class ChangePasswordForm(Form):
 
 class UploadProfilePictureForm(Form):
 	image = FileField('Image')
+
 

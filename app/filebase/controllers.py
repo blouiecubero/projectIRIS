@@ -8,14 +8,20 @@ from flask.ext.uploads import UploadSet, IMAGES, configure_uploads
 from werkzeug import secure_filename
 from app.database import db_session, Base,init_db
 from app.projects.models import Project
-from app.users.models import FileBase, User
+from app.users.models import FileBase, User, Permission
 from app import login_manager, oid, imageUploadSet
 from app.filebase.helpers import Store_Users, FileChecker
 from app.filebase.forms import UploadFileForm
 from config import UPLOADS_FILES_DEST
 from sqlalchemy.exc import DatabaseError, IntegrityError
+from app.decorators.controllers import admin_required, HR_required, Employee_required
 
 Filebase = Blueprint('Filebase', __name__,)
+
+## This enables permissions to run on all functions.
+@Filebase.app_context_processor
+def inject_permissions():
+    return dict(Permission=Permission)
 
 # Initializing class for temporary storage
 store_user = Store_Users()
@@ -33,6 +39,7 @@ def add_to_db(object):
 
 # @function - Shows and uploads files for a specified user
 @Filebase.route('/files', methods=['GET', 'POST'])
+@Employee_required
 def file_base():
     upload_file_form = UploadFileForm(request.form)
     whosuser = store_user.check_if_none()
@@ -49,6 +56,7 @@ def file_base():
     return render_template('filebase/home.html',user=current_user, whosuser = whosuser, filebase=finance, upload_file_form=upload_file_form, all_users=all_users)
 
 @Filebase.route('/upload_files', methods=['GET','POST'])
+@HR_required
 def upload_files():
     if request.method == 'POST' and 'files' in request.files:
         file = request.files['files']

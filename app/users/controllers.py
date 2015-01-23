@@ -9,15 +9,24 @@ from sqlalchemy.exc import DatabaseError, IntegrityError
 from sqlalchemy.sql import exists
 from sqlalchemy import or_
 from flask.ext.uploads import UploadSet, IMAGES, configure_uploads
-
 from app.database import db_session, Base,init_db
 from app.users.forms import LoginForm, ChangePasswordForm
-from app.users.models import User, ProfileImage
+from app.users.models import User, ProfileImage, Role, Permission
 from app.projects.models import Project
+from app.users.helpers import Role_Determinator
+from app.decorators.controllers import admin_required
 from app import login_manager, oid, imageUploadSet
 
 # @define - blueprint for users
 Users = Blueprint('Users', __name__,)
+
+# Initializing helper class for handling role modification
+role_change = Role_Determinator()
+
+## This enables permissions to run on all functions.
+@Users.app_context_processor
+def inject_permissions():
+    return dict(Permission=Permission)
 
 # @function - Used to add an object to a database [Could be move to another class to make this more reusable by other objects]
 def add_to_db(object):
@@ -45,7 +54,6 @@ def load_user(id):
 def login():
     if g.user is not None and g.user.is_authenticated():
         return redirect(url_for('Home.show_home'))
-
     form = LoginForm(request.form)
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
@@ -56,6 +64,46 @@ def login():
             return redirect(url_for('Home.show_home'))
         flash('Wrong username or password', 'error-message')
     return render_template("users/login.html", form=form)
+
+@Users.route('/edit_permissions', methods=['GET','POST'])
+@admin_required
+def change_permissions():
+    all_users = User.query.all()
+    roles = Role.query.order_by(Role.id).all()
+    if request.method == 'POST':
+        
+            if request.form['button'] == 'Update Role':
+                whosuser = request.form['users']
+                whatrole = request.form['roles']
+                user = User.query.filter_by(username=whosuser).first()
+                user.role = Role.query.filter_by(name=whatrole).first()
+                db_session.add(user)
+                db_session.commit()
+                flash('Role changed.')
+                return redirect(url_for('Users.change_permissions'))
+            
+            elif request.form['button'] == 'Save Roles':
+                list_of_emp = ['HR','Finance','Employee','OJT','New_User']
+                for emp_type in list_of_emp:
+                    permit = 0x00
+                    for index_num in range(len(list_of_emp)):
+                        type = emp_type+ ' ' + str(index_num + 1)
+                        print type
+                        get_val = request.form.get(str(type))
+                        if get_val is not None:
+                            permit = permit | int(get_val)
+                    default = True
+                    print permit
+                    if emp_type != 'New_User':
+                        default = False
+                    role_change.define_permissions(emp_type,permit,default)
+                    role_change.record_roles()
+                flash('Permissions changed.')
+                return redirect(url_for('Users.change_permissions'))
+            
+    return render_template('admin/edit_permissions.html', all_users=all_users, roles=roles, user=current_user.username)
+
+
 
 @Users.route('/change_password/',methods=['GET','POST'])
 @login_required

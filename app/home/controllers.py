@@ -4,13 +4,17 @@ from flask import Blueprint, Response , request, render_template, \
 
 from flask.ext.login import login_user , logout_user , current_user , login_required
 from app.users.forms import UploadProfilePictureForm
-from app.users.models import User, FileBase
+from app.users.models import User, FileBase, Permission
 from app.users.controllers import getProfilePicture, getUtilization
 
 
 # @define - blueprint for home
 Home = Blueprint('Home', __name__,)
 
+## This enables permissions to run on all functions.
+@Home.app_context_processor
+def inject_permissions():
+    return dict(Permission=Permission)
 
 # @function - Renders the home page
 @Home.route('/')

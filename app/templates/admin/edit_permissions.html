@@ -1,0 +1,95 @@
+{% from "macros.html" import render_field %}
+{% extends "layout.html" %}
+
+{% block body %}
+
+	{% include 'home/navigation.html' %}
+
+	<div class="mainContainer">
+		<div class="newsContainer">
+			{% with reminder = get_flashed_messages() %}
+			{% if reminder %}
+			<div>
+				{% for remind in reminder %}
+				{{ remind }}<br>
+				{% endfor %}
+			</div>
+			{% endif %}
+			{% endwith %}
+		<H1>Set Roles </H1>
+			<form method="POST" enctype="multipart/form-data">
+					<h4 style="margin-left:0; font-weight:normal;">Select User: </h4>
+							<select name="users", onchange="myFunction()">
+								{% for user in all_users %}
+								<option value={{ user.username }}>{{user.username}}</option>
+								{% endfor %}
+							</select>
+							
+					<h4 style="margin-left:0; font-weight:normal;">Select Role: </h4>
+							<select name="roles", onchange="myFunction()">
+								{% for r in roles %}
+								<option value={{ r.name }}>{{r.name}}</option>
+								{% endfor %}
+							</select>
+							<input class="btn btn-default" button type="submit" name="button" value="Update Role"></button>
+			<form>
+					
+	</div>
+	<H1>Define access roles </H1>
+	<div class="table-responsive">          
+      <table class="table">
+        <thead>
+          <tr>
+			<th> </th>
+            <th>View Files</th>
+            <th>HR Functionalities</th>
+			<th>See Projects</th>
+			<th>Uploading Files</th>
+          </tr>
+        </thead>
+		<form method="POST" enctype="multipart/form-data">
+        <tbody>
+          <tr>
+            <td>HR</td>
+            <td><input type="checkbox" name="HR 1" value="1" /></td>
+			<td><input type="checkbox" name="HR 2" value="2" /></td>
+			<td><input type="checkbox" name="HR 3" value="4" /></td>
+			<td><input type="checkbox" name="HR 4" value="8" /></td>
+          </tr>
+          <tr>
+            <td>Finance</td>
+            <td><input  type="checkbox" name="Finance 1" value="1" /></td>
+			<td><input  type="checkbox" name="Finance 2" value="2" /></td>
+			<td><input  type="checkbox" name="Finance 3" value="4" /> </td>
+			<td><input  type="checkbox" name="Finance 4" value="8" /></td>
+          </tr>
+          <tr>
+            <td>Employee</td>
+            <td><input type="checkbox" name="Employee 1" value="1" /></td>
+			<td><input type="checkbox" name="Employee 2" value="2" /></td>
+			<td><input type="checkbox" name="Employee 3" value="4" /></td>
+			<td><input type="checkbox" name="Employee 4" value="8" /></td>
+          </tr>
+		  <tr>
+            <td>OJT</td>
+            <td><input type="checkbox" name="OJT 1" value="1" /> </td>
+			<td><input type="checkbox" name="OJT 2" value="2" /> </td>
+			<td><input type="checkbox" name="OJT 3" value="4" /> </td>
+			<td><input type="checkbox" name="OJT 4" value="8" /></td>
+          </tr>
+		  <tr>
+            <td>New User</td>
+            <td><input type="checkbox" name="New_User 1" value="1" /> </td>
+			<td><input type="checkbox" name="New_User 2" value="2" /> </td>
+			<td><input type="checkbox" name="New_User 3" value="4" /> </td>
+			<td><input type="checkbox" name="New_User 4" value="8" /></td>
+          </tr>
+		  <input class="btn btn-default" button type="submit" name="button" value="Save Roles"></button>
+	</form>
+        </tbody>
+      </table>
+	 
+      </div>
+	  
+	
+{% endblock %}

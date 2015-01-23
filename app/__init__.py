@@ -34,11 +34,13 @@ from app.home import Home
 from app.projects import Projects
 from app.filebase import Filebase
 from app.users.models import FileBase
+from app.decorators import Decorators
 
 app.register_blueprint(Users)
 app.register_blueprint(Home)
 app.register_blueprint(Projects)
 app.register_blueprint(Filebase)
+app.register_blueprint(Decorators)
 
 
  

@@ -2,8 +2,11 @@
 from sqlalchemy import Table, Column, ForeignKey, Integer, Float, String, Boolean, DateTime, Text
 from sqlalchemy.exc import DatabaseError, IntegrityError
 from sqlalchemy.orm import relationship, backref
-from app.database import Base
+from flask.ext.login import UserMixin, AnonymousUserMixin
+from app.database import Base, db_session
 from datetime import datetime
+from flask import current_app
+from app import login_manager
 from app.projects.models import Project
 
 # @definition - Creates a table for the pivot table for users-projects relationship
@@ -13,8 +16,19 @@ user_projects = Table('user_projects',Base.metadata,
     Column('project_id', Integer, ForeignKey(Project.id))
 )
 
+class Permission:
+    
+    ## This class initializes the permissions that will be imposed on specific Roles.
+    ## As you can see, the permissions are initialized in a hexadecimal value.
 
-class User(Base):
+    VIEW_FILES = 0x01
+    HR_FUNCTION = 0x02
+    SEE_PROJECTS = 0x04
+    UPLOAD_FILES = 0x08
+    ADMINISTER = 0x80
+    
+
+class User(UserMixin, Base):
 
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True,autoincrement=True)
@@ -24,7 +38,8 @@ class User(Base):
     email = Column(String(255), nullable=False, unique=True)
     username = Column(String(50), nullable=False, unique=True)
     password = Column(String(255), nullable=False, default='')
-
+    role_id = Column(Integer, ForeignKey('roles.id'))
+    
     #One-to-many
     stored_file = relationship('FileBase', backref='users',lazy='dynamic')
 
@@ -44,7 +59,35 @@ class User(Base):
         self.email = email
         self.username = username
         self.password = password
+        if self.role_id is None:
+            if self.username == 'louie.cubero':
+                self.role_id = Role.query.filter_by(permissions=0xff).first()
+            if self.role is None:
+                self.role_id = Role.query.filter_by(default=True).first()
 
+    ## This function will determine if the user is granted a specific permission. It acts like a decorator.
+    def can(self, permissions):
+        return self.role is not None and \
+            (self.role.permissions & permissions) == permissions
+
+    ## This function will determine if the user is an administrator. It acts like a decorator.
+    def is_administrator(self):
+        return self.can(Permission.ADMINISTER)
+
+    ## This function will determine if the user is an HR. It acts like a decorator.
+    def is_HR(self):
+        return self.can(Permission.HR_FUNCTION)
+
+    ## This function will determine if the user is an Employee. It acts like a decorator.
+    def can_view_files(self):
+        return self.can(Permission.VIEW_FILES)
+
+    def can_upload_files(self):
+        return self.can(Permission.UPLOAD_FILES)
+
+    def can_see_projects(self):
+        return self.can(Permission.SEE_PROJECTS)
+    
     def is_authenticated(self):
         return True
  
@@ -117,4 +160,53 @@ class FileBase(Base):
 
         
     def __repr__(self):
-        return self.filename 
+        return self.filename
+
+
+class Role(Base):
+
+    ## This *Role* class serves as the table that initializes all the Roles that
+    ## has been established in this program. The permission of all its Role are based from the Permission class.
+    
+    __tablename__ = 'roles'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(64), unique=True)
+    default = Column(Boolean, default=False, index=True)
+    permissions = Column(Integer)
+    users = relationship('User', backref='role', lazy='dynamic')
+
+    ## There are 5 kinds of role that are used. New_User has no permissions.
+    ## Employee can only view files, HR_ONLY can only exercise HR functions
+    ## While HR_User is a combination HR and User Functions.
+    ## The Administrator function has all the functions. HR, User, and
+    ## including assigning roles to certain users.
+
+    @staticmethod
+    def insert_roles(roles):
+
+        
+    ## The purpose of this for loop is to assign the permission to its specific Roles.
+        for r in roles:
+            role = Role.query.filter_by(name=r).first()
+            if role is None:
+                role = Role(name=r)
+            role.permissions = roles[r][0]
+            role.default = roles[r][1]
+            db_session.add(role)
+        db_session.commit()
+    
+    def __repr__(self):
+        return '<Role %r>' % self.name
+
+
+class AnonymousUser(AnonymousUserMixin):
+
+    ## This class sets permissions upon anonymous users. This is to prevent outside access easily.
+    
+    def can(self, permissions):
+        return False
+
+    def is_administrator(self):
+        return False
+    
+login_manager.anonymous_user = AnonymousUser 

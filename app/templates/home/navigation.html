@@ -1,15 +1,4 @@
-<!--div class="navigation">
-	<div class="menuBar">
-		<ul class="nav">
-			<li><a href="#">Home</a></li>
-			<li><a href="#">Project</a></li>
-			<li><a href="#">Caps</a></li>
-			<li><a href="#">Logs</a></li>
-			<li><a href="#">Feedback</a></li>
-			<li style="float:right;"><a href="{{ url_for('Users.logout') }}">Logout <i>{{user.username}}</i> from Iris</a></li>
-		</ul>
-	</div>
-</div-->
+
 <nav class="navbar navbar-custom">
   <div class="container-fluid">
     <!--div class="navbar-header">
@@ -17,14 +6,24 @@
     </div-->
     <div>
       	<ul class="nav navbar-nav">
-	        <!--li class="active"><a href="#">Home</a></li-->
+
 	        <li><a href="{{url_for('Home.show_home')}}">Home</a></li>
+			{% if current_user.can_see_projects() %}
 			<li><a href="#">Project</a></li>
+			{%endif%}
 			<li><a href="#">Caps</a></li>
 			<li><a href="#">Logs</a></li>
+			{% if current_user.can_view_files() %}
 			<li><a href="{{url_for('Filebase.file_base')}}">Files</a></li>
+			{% endif %}
+			{% if current_user.is_HR() %}
+			<li><a href="#">HR</a></li>
+			{% endif %}
+			{% if current_user.is_administrator() %}
+			<li><a href="{{url_for('Users.change_permissions')}}">Change Permissions</a></li>
+			{% endif %}
 			<!--li><a href="#">Feedback</a></li-->
-			<!--li style="float:right;"><a href="{{ url_for('Users.logout') }}">Logout <i>{{user.username}}</i> from Iris</a></li-->
+			
 		</ul>
 		<ul class="nav navbar-nav navbar-right">
 			<li class="dropdown">
