@@ -38,7 +38,7 @@
 					</ul>
 				</div-->
 			</div>
-			
+	{% if current_user.can_upload_files() %}
 	<div class="mainContainer">
 		<div class="newsContainer">
 			<form method="POST" enctype="multipart/form-data">
@@ -49,7 +49,8 @@
 								{% endfor %}
 							</select>
 							<input class="btn btn-default" button type="submit" name="button" value="Choose User"></button>
-			<form>
+			</form>
+	{% endif %}
 					<h4 style="margin-left:0; font-weight:normal;">File List for {{ whosuser }}:</h4>
 						<div class="feed">
 							{% for file in filebase %}

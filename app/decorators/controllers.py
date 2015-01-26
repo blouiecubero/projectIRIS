@@ -28,7 +28,10 @@ def admin_required(f):
     return permission_required(Permission.ADMINISTER)(f)
 
 def HR_required(f):
-    return permission_required(Permission.HR_FUNCTION)(f) 
+    return permission_required(Permission.HR_FUNCTION)(f)
 
-def Employee_required(f):
+def upload_permission_required(f):
+    return permission_required(Permission.UPLOAD_FILES)(f)
+
+def view_files_required(f):
     return permission_required(Permission.VIEW_FILES)(f) 
