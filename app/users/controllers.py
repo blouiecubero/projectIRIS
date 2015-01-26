@@ -101,7 +101,7 @@ def change_permissions():
                 flash('Permissions changed.')
                 return redirect(url_for('Users.change_permissions'))
             
-    return render_template('admin/edit_permissions.html',list_of_emp=list_of_emp, all_users=all_users, roles=roles, user=current_user.username)
+    return render_template('admin/edit_permissions.html',list_of_emp=list_of_emp, all_users=all_users, roles=roles, user=current_user)
 
 
 
@@ -109,6 +109,7 @@ def change_permissions():
 @login_required
 def change_password():
     form = ChangePasswordForm(request.form)
+    user = current_user
     if form.validate_on_submit():
         user = g.user
         print user.username
@@ -125,7 +126,7 @@ def change_password():
                 flash("Passwords do not match",'error')
         else:   
             flash('Wrong password', 'error')
-    return render_template("users/change_password.html", form=form)
+    return render_template("users/change_password.html", form=form, user=user)
 
 @Users.route('/logout')
 def logout():
