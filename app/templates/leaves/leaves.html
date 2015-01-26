@@ -1,0 +1,89 @@
+{% from "macros.html" import render_field %}
+{% extends "layout.html" %}
+{% block body %}
+
+    {% include 'home/navigation.html' %}
+    <div class="jumbotron">
+     <div class="container">
+      <h1>Hi, {{user.username}}! </h1>
+
+      <h3>Current leave statistics: </h3>
+
+      <div class="row">
+        <div class="col-md-6">
+          <form action = "{{ url_for('Leaves.leaves') }}" method=post>
+           {{ form.hidden_tag() }} 
+
+            <table class="table">
+              <thead
+              <tr>
+                    <td></td>
+                    <td> No. of available leaves:</td>
+                    <td> Input dates for leave: </td>
+
+                <tr>
+              </thead>
+
+              <tbody>
+             		<th>Sick Leave: </th>
+                  <td> {{ leaveData.sl }} </td> <!-- Fetched from DB -->
+                  <td> 
+                    <input type="Text" id="sickDateField" name="sickDateField" class="form-control" placeholder="mm/dd/yyyy"> 
+                    <script> jQuery('#sickDateField').datepicker({ clearBtn: true, multidate: true, multidateSeparator: ";", todayHighlight: true }); </script>
+                  </td> 
+
+               	<tr>
+               	  <th> Vacation Leave: </th>
+                    <td> {{ leaveData.vl }} </td> <!-- Fetched from DB -->
+                    <td>
+                      <input type="Text" id="vacationDateField" name="vacationDateField" class="form-control" placeholder="mm/dd/yyyy">
+                      <script> jQuery('#vacationDateField').datepicker({ clearBtn: true, multidate: true, multidateSeparator: ";", todayHighlight: true }); </script>
+                    </td>
+
+              	</tr>
+               	
+                <tr>
+               		<th> Offset days: </th>
+                    <td> {{ leaveData.offset }} </td> <!-- Fetched from DB -->
+                    <td>
+                      <input type="Text" id="offsetDateField" name="offsetDateField" class="form-control" placeholder="mm/dd/yyyy"> 
+                      <script> jQuery('#offsetDateField').datepicker({ clearBtn: true, multidate: true, multidateSeparator: ";", todayHighlight: true }); </script>
+                    </td>
+               	</tr>
+     
+              </tbody>
+            </table>
+
+            <button class="btn btn-lg btn-primary btn-block" type="submitButton" value="submitButton" name = "submitButton"> Submit </button>
+          </form>
+        </div>
+      </div>
+
+ <!--     <div class="mainContainer">
+        <div class="newsContainer">
+          <form method="POST">
+              <h4 style="margin-left:0; font-weight:normal;">Select User: </h4>
+                  <select name="users", onchange="myFunction()">
+                    {% for user in all_users %}
+                    <option value={{ user.username }}>{{user.username}}</option>
+                    {% endfor %}
+                  </select>
+                  <input class="btn btn-default" button type="submit" name="chooseUser" value="Choose User"></button>
+          <form>
+              <h4 style="margin-left:0; font-weight:normal;">Leave Statistics {{ whosuser }}:</h4>
+                <div class="feed">
+                  {% for file in filebase %}
+                  <div>Filename: <a href = "http://127.0.0.1:5000/uploads/files/{{ file.filename }}">{{file.filename}}</a></div>
+                  <div>Date uploaded: {{ moment(file.date).fromNow() }}</div>
+                  {% if current_user.username == 'louie.cubero' %}
+                  <div><a href = "{{url_for('Filebase.delete_file', file_name = file.filename) }}">Delete File</a></div>
+                  {% endif %}
+                  {% endfor %}
+                  <div></div>
+                </div>
+        </div>
+      </div> -->
+    </div> <!-- end div class="col-md-6" -->
+  </div>
+
+{% endblock %}
