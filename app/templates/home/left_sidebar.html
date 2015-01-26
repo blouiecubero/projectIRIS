@@ -1,0 +1,13 @@
+<div class="leftCol">
+	<div class="profilePictureContainer">
+		<a class="profilePicThumb" href="#" rel="theater" id="u_jsonp_3_9">
+			<img class="profilePic" alt="Profile picture" src="{{profile_picture}}">
+		</a>
+		<div class= "editProfilePicture" data-toggle="modal" data-target="#uploadProfilePicture">
+			<!--a href="#"-->
+			<img src="{{url_for('static', filename='assets/images/edit.png') }}"/>
+			<span>Update</span>
+		</div>
+	</div>
+	{% include 'home/projects_nav.html' %}
+</div>
