@@ -1,7 +1,7 @@
 {% from "macros.html" import render_field %}
 {% extends "layout.html" %}
 {% block body %}
-
+{% if current_user.is_HR %}
     {% include 'home/navigation.html' %}
     <div class="jumbotron">
      <div class="container">
@@ -58,7 +58,7 @@
           </form>
         </div>
       </div>
-
+{% endif %}
  <!--     <div class="mainContainer">
         <div class="newsContainer">
           <form method="POST">
