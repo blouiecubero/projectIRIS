@@ -210,7 +210,6 @@ class AnonymousUser(AnonymousUserMixin):
         return False
     
 login_manager.anonymous_user = AnonymousUser 
-<<<<<<< HEAD
 
 # Added by Ann
 
@@ -234,5 +233,3 @@ class UserStatistics(Base):
         self.slDates = slDates
         self.offset = offset
         self.offsetDates = offsetDates
-=======
->>>>>>> origin/googoodolls

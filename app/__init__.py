@@ -35,21 +35,14 @@ from app.projects import Projects
 from app.filebase import Filebase
 from app.users.models import FileBase
 from app.decorators import Decorators
-<<<<<<< HEAD
 from app.leaves import Leaves # Added by Ann
-=======
->>>>>>> origin/googoodolls
 
 app.register_blueprint(Users)
 app.register_blueprint(Home)
 app.register_blueprint(Projects)
 app.register_blueprint(Filebase)
 app.register_blueprint(Decorators)
-<<<<<<< HEAD
 app.register_blueprint(Leaves) # Added by Ann
-=======
-
->>>>>>> origin/googoodolls
 
  
 

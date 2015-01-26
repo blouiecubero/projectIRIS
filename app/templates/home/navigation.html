@@ -17,11 +17,7 @@
 			<li><a href="{{url_for('Filebase.file_base')}}">Files</a></li>
 			{% endif %}
 			{% if current_user.is_HR() %}
-<<<<<<< HEAD
 			<li><a href="{{url_for('Leaves.leaves')}}">HR - Leaves</a></li> <!-- Added by Ann -->
-=======
-			<li><a href="#">HR</a></li>
->>>>>>> origin/googoodolls
 			{% endif %}
 			{% if current_user.is_administrator() %}
 			<li><a href="{{url_for('Users.change_permissions')}}">Change Permissions</a></li>
