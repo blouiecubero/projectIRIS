@@ -18,4 +18,4 @@ def before_request():
 # @function - Renders the project page
 @Projects.route('/project')
 def show_project():
-	return render_template('project.html')
+	return render_template('projects/project.html', user=current_user)

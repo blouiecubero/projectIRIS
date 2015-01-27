@@ -41,19 +41,19 @@ def add_to_db(object):
 @Filebase.route('/files', methods=['GET', 'POST'])
 @view_files_required
 def file_base():
-    upload_file_form = UploadFileForm(request.form)
-    whosuser = store_user.check_if_none()
-    user = User.query.filter_by(username=whosuser).first()
     all_users = User.query.all()
-    finance = FileBase.query.filter_by(user = user.username).order_by(FileBase.date.desc()).all()
-    file_owner = User.query.filter_by(username=whosuser).first() #Finds the user that was chosen by the admin
-
+    whosuser = store_user.check_if_none()
+    upload_file_form = UploadFileForm(request.form)
+    chosen_user = User.query.filter_by(username=whosuser).first() #Finds the user that was chosen by the admin
+    finance = FileBase.query.filter_by(user = chosen_user.username).order_by(FileBase.date.desc()).all() #Loads up the files of the chosen_user
+    present_user = User.query.filter_by(username=current_user.username).first() #Loads up the present user
+    files_of_the_current_user = FileBase.query.filter_by(user = present_user.username).order_by(FileBase.date.desc()).all() # Loads up the files of the present user
     if request.method == 'POST':
         wcuser = request.form['users']          
         store_user.store(wcuser)                # it loads up the chosen user
         return redirect(url_for('.file_base'))  # and it will load back to the admin page with the new chosen user.
     
-    return render_template('filebase/home.html',user=current_user, whosuser = whosuser, filebase=finance, upload_file_form=upload_file_form, all_users=all_users)
+    return render_template('filebase/home.html',user=current_user,files_of_the_current_user=files_of_the_current_user, whosuser = whosuser, filebase=finance, upload_file_form=upload_file_form, all_users=all_users)
 
 @Filebase.route('/upload_files', methods=['GET','POST'])
 @upload_permission_required
@@ -86,18 +86,3 @@ def delete_file(file_name):
 def send_file(filename):
     ## This function loads up the file to the browser. Thanks to this, we can see uploaded pictures in the webpage.
     return send_from_directory(current_app.config['UPLOADS_FILES_DEST'], filename)
-
-    ##def upload_file():
-##    file = request.files['upload']          # Gets the file
-##    wcuser = request.form['users']          # Gets who's user will be the recipient of the file.
-##    desc = request.form['description']      # Gets the description.
-##    if file and check_file_ext.allowed_files(file.filename): # checks if the file is allowed to upload
-##        file_name = secure_filename(file.filename)
-##        userid = User.query.filter_by(username=wcuser).first() # Looks up for the recipient of the file
-##        user = FileBase(owner = userid, filename = file_name, description = desc) # Defines the file, the owner of the file, and its description
-##        db_session.add(user)    # And executes a command to store it.
-##        file.save(os.path.join(UPLOADS_FILES_DEST, file_name))  # Then it saves the file to the file storage address defined from the config.py
-##        return redirect(url_for('.file_base'))
-##
-
-##

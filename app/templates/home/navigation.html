@@ -9,7 +9,7 @@
 
 	        <li><a href="{{url_for('Home.show_home')}}">Home</a></li>
 			{% if current_user.can_see_projects() %}
-			<li><a href="#">Project</a></li>
+			<li><a href="{{ url_for('Projects.show_project') }}">Project</a></li>
 			{%endif%}
 			<li><a href="#">Caps</a></li>
 			<li><a href="#">Logs</a></li>

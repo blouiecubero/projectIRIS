@@ -1,4 +1,5 @@
 from flask import current_app
+from flask.ext.login import current_user
 class Store_Users():
     
     ## The purpose of this class is to stand as a threshold and a storage for the selection process
@@ -17,7 +18,7 @@ class Store_Users():
     ## This function initializes the user_file variable (in the admin_user function) when the program is just starting.
     def check_if_none(self):    
         if self.stored_user == "":            # If the program had just started (At this point, it will be none.)
-            self.stored_user = "louie.cubero" # Then the initialized user would be the admin itself. 
+            self.stored_user = current_user.username # Then the initialized user would be the admin itself. 
             return self.stored_user
         return self.stored_user               # Else, it would load the current stored_user. (This will be changed if the admin has already chose a user.
 
