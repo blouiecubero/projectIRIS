@@ -1,5 +1,6 @@
 # Statement for enabling the development environment
 DEBUG = True
+##TRAP_BAD_REQUEST_ERRORS = True
 
 # Define the application directory
 import os

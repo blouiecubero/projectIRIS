@@ -39,7 +39,6 @@
                       <input type="Text" id="vacationDateField" name="vacationDateField" class="form-control" placeholder="mm/dd/yyyy">
                       <script> jQuery('#vacationDateField').datepicker({ clearBtn: true, multidate: true, multidateSeparator: ";", todayHighlight: true }); </script>
                     </td>
-
               	</tr>
                	
                 <tr>
@@ -58,31 +57,54 @@
           </form>
         </div>
       </div>
+    </div> <!-- end div class="col-md-6" -->
+  </div>
 {% endif %}
- <!--     <div class="mainContainer">
+      <div class="mainContainer">
         <div class="newsContainer">
-          <form method="POST">
-              <h4 style="margin-left:0; font-weight:normal;">Select User: </h4>
-                  <select name="users", onchange="myFunction()">
+          <form name = "chooseUser" action = "{{ url_for('Leaves.leaves') }}" method=post>
+            {{ form.hidden_tag() }} 
+              <h4>Select User: </h4>
+                  <select name="userDropdown" id="userDropdown" onchange="myFunction()">
                     {% for user in all_users %}
-                    <option value={{ user.username }}>{{user.username}}</option>
+                      <option value={{ user.username }}>{{user.username}}</option>
                     {% endfor %}
                   </select>
-                  <input class="btn btn-default" button type="submit" name="chooseUser" value="Choose User"></button>
-          <form>
-              <h4 style="margin-left:0; font-weight:normal;">Leave Statistics {{ whosuser }}:</h4>
+                  <button class="btn btn-lg btn-primary btn-block" type="submit" value="chooseUser" name = "chooseUser" id = "chooseUser"> Choose User </button>
+
+          </form>
+              <h4>Leave Statistics:</h4>
                 <div class="feed">
-                  {% for file in filebase %}
-                  <div>Filename: <a href = "http://127.0.0.1:5000/uploads/files/{{ file.filename }}">{{file.filename}}</a></div>
-                  <div>Date uploaded: {{ moment(file.date).fromNow() }}</div>
-                  {% if current_user.username == 'louie.cubero' %}
-                  <div><a href = "{{url_for('Filebase.delete_file', file_name = file.filename) }}">Delete File</a></div>
-                  {% endif %}
-                  {% endfor %}
-                  <div></div>
+                  <table class="table">
+                    <tbody>
+                      <tr>
+                        <th></th>
+                        <th> # of Days </th>
+                        <th> Leave Dates</th>
+                      </tr>
+                      <tr>
+                        <th> Sick Leave: </th>
+                          <td> {{ dropDownQuery.sl }} </td>
+                          <td> {{ slSummary }}</td>
+                      </tr>
+
+                      <tr>
+                        <th> Vacation Leave: </th>
+                          <td> {{ dropDownQuery.vl }} </td> 
+                          <td> {{ vacationSummary }}</td>                          
+                      </tr>
+                      
+                      <tr>
+                        <th> Offset days: </th>
+                          <td> {{ dropDownQuery.offset }} </td> 
+                          <td> {{ offsetSummary }} </td>                          
+                      </tr>
+                    <tbody>
+                  </table>
+
                 </div>
         </div>
-      </div> -->
+      </div>
     </div> <!-- end div class="col-md-6" -->
   </div>
 
