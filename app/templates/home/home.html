@@ -20,6 +20,9 @@
 							<option>@Meeting</option>
 						</select>
 					</div>
+					{% if current_user.is_administrator %}
+					<a href = "{{url_for('Home.downloadFeedback')}}">See Feedbacks</a>
+					{% endif %}
 					<div id="statBox">
 						<table>
 							{% for project in utilizationProject %}

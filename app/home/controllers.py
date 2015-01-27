@@ -5,6 +5,7 @@ from flask import Blueprint, Response , request, render_template, \
 from flask.ext.login import login_user , logout_user , current_user , login_required
 from app.users.forms import UploadProfilePictureForm
 from app.users.models import User, FileBase, Permission
+import datetime
 from app.users.controllers import getProfilePicture, getUtilization
 
 
@@ -39,8 +40,22 @@ def saveFeedback():
 	if request.method == 'POST':
 		print request.form['feedback']
 		with open("feedback.txt", "a") as feedbackFile:
-			feedbackFile.write(request.form['feedback']+"\n\n")
+                        date = datetime.date.today()
+                        feedbackFile.write('"'+current_user.username+ '",'+ '"'+date.isoformat() +'",')
+			feedbackFile.write('"'+request.form['feedback']+'"'+"\n")
 		return redirect(url_for('Home.show_home'))
+
+
+@Home.route('/dl_feedback',methods=['GET','POST'])
+@login_required
+def downloadFeedback():
+    file = open('feedback.txt')
+    csv = file.read()
+    response = make_response(csv)
+    response.headers["Content-Disposition"] = "attachment; filename=feedbacks.csv"
+    return response
+
+
 
 #@Home.route('/sync')
 @login_required
