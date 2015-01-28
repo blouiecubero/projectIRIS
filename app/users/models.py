@@ -41,7 +41,7 @@ class User(UserMixin, Base):
     role_id = Column(Integer, ForeignKey('roles.id'))
     
     #One-to-many
-    stored_file = relationship('FileBase', backref='users',lazy='dynamic')
+    stored_file = relationship('Payslip', backref='users',lazy='dynamic')
 
     #One-to-many
     images = relationship('ProfileImage', backref='users',lazy='dynamic')
@@ -150,8 +150,8 @@ class ProfileImage(Base):
             'image'             : self.image
         }
 
-class FileBase(Base):
-    __tablename__ = 'files'
+class Payslip(Base):
+    __tablename__ = 'Payslip'
     id =Column(Integer, primary_key=True)
     description = Column(Text)
     date = Column(DateTime, index=True, default=datetime.utcnow)

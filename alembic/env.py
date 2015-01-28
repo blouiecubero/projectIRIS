@@ -3,7 +3,7 @@ from alembic import context
 from sqlalchemy import engine_from_config, pool
 from logging.config import fileConfig
 import sys
-sys.path.append('C:\Users\LouieCubero\Documents\GitHub\Test')
+sys.path.append('C:\Users\LouieCubero\Documents\GitHub\projectIRIS')
 from app.database import Base
 
 # this is the Alembic Config object, which provides

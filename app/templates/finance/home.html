@@ -3,8 +3,8 @@
 {% block body %}
 
 	{% include 'home/navigation.html' %}
-	{% include 'filebase/upload_file_modal_2.html' %}
-	{% include 'filebase/left_sidebar.html' %}
+	{% include 'finance/upload_payslip_modal.html' %}
+	{% include 'finance/left_sidebar.html' %}
 	<div class="mainContent">
 			<div class="upperContent">
 				<div id="detailsBox">
@@ -55,10 +55,10 @@
 					<h4 style="margin-left:0; font-weight:normal;">File List for {{ whosuser }}:</h4>
 						<div class="feed">
 							{% for file in filebase %}
-							<div>Filename: <a href = "http://127.0.0.1:5000/uploads/files/{{ file.filename }}">{{file.filename}}</a></div>
+							<div>Filename: <a href = "http://127.0.0.1:5000/uploads/payslip/{{ file.filename }}">{{file.filename}}</a></div>
 							<div>Date uploaded: {{ moment(file.date).fromNow() }}</div>
 							{% if current_user.can_upload_files() %}
-							<div><a href = "{{url_for('Filebase.delete_file', file_name = file.filename) }}">Delete File</a></div>
+							<div><a href = "{{url_for('PaySlip.delete_payslip', file_name = file.filename) }}">Delete File</a></div>
 							{% endif %}
 							{% endfor %}
 							<div></div>
@@ -69,10 +69,10 @@
 	<h4 style="margin-left:0; font-weight:normal;">File List for {{ user.username }}:</h4>
 						<div class="feed">
 							{% for file in files_of_the_current_user %}
-							<div>Filename: <a href = "http://127.0.0.1:5000/uploads/files/{{ file.filename }}">{{file.filename}}</a></div>
+							<div>Filename: <a href = "http://127.0.0.1:5000/uploads/payslip/{{ file.filename }}">{{file.filename}}</a></div>
 							<div>Date uploaded: {{ moment(file.date).fromNow() }}</div>
 							{% if current_user.can_upload_files() %}
-							<div><a href = "{{url_for('Filebase.delete_file', file_name = file.filename) }}">Delete File</a></div>
+							<div><a href = "{{url_for('PaySlip.delete_payslip', file_name = file.filename) }}">Delete File</a></div>
 							{% endif %}
 							{% endfor %}
 							<div></div>

@@ -32,15 +32,15 @@ from app.users import Users
 from app.users.models import User
 from app.home import Home 
 from app.projects import Projects
-from app.filebase import Filebase
-from app.users.models import FileBase
+from app.finance import PaySlip
+from app.users.models import Payslip
 from app.decorators import Decorators
 from app.leaves import Leaves # Added by Ann
 
 app.register_blueprint(Users)
 app.register_blueprint(Home)
 app.register_blueprint(Projects)
-app.register_blueprint(Filebase)
+app.register_blueprint(PaySlip)
 app.register_blueprint(Decorators)
 app.register_blueprint(Leaves) # Added by Ann
 

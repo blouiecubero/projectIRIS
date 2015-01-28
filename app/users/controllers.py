@@ -100,7 +100,6 @@ def change_permissions():
                     role_change.record_roles()
                 flash('Permissions changed.')
                 return redirect(url_for('Users.change_permissions'))
-            
     return render_template('admin/edit_permissions.html',list_of_emp=list_of_emp, all_users=all_users, roles=roles, user=current_user)
 
 

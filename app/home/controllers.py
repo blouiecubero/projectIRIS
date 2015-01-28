@@ -4,7 +4,7 @@ from flask import Blueprint, Response , request, render_template, \
 
 from flask.ext.login import login_user , logout_user , current_user , login_required
 from app.users.forms import UploadProfilePictureForm
-from app.users.models import User, FileBase, Permission
+from app.users.models import User, Payslip, Permission
 import datetime
 from app.users.controllers import getProfilePicture, getUtilization
 

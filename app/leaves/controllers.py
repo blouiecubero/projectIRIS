@@ -7,7 +7,7 @@ from flask.ext.login import current_user
 from app.database import db_session, Base, init_db
 from app.users.models import User, UserStatistics
 from app.leaves.forms import datePicking
-from app.filebase.helpers import Store_Users
+from app.finance.helpers import Store_Users
 # from forms import signIn, datePicking, dummy
 # from app import app
 # from models import db, User, UserStatistics, Dummy

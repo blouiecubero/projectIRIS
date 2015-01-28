@@ -14,7 +14,7 @@
 			<li><a href="#">Caps</a></li>
 			<li><a href="#">Logs</a></li>
 			{% if current_user.can_view_files() %}
-			<li><a href="{{url_for('Filebase.file_base')}}">Files</a></li>
+			<li><a href="{{url_for('PaySlip.payslip_base')}}">Files</a></li>
 			{% endif %}
 			{% if current_user.is_HR() %}
 			<li><a href="{{url_for('Leaves.leaves')}}">HR - Leaves</a></li> <!-- Added by Ann -->
