@@ -41,7 +41,7 @@ def saveFeedback():
 		print request.form['feedback']
 		with open("feedback.txt", "a") as feedbackFile:
                         date = datetime.date.today()
-                        feedbackFile.write('"'+current_user.username+ '",'+ '"'+date.isoformat() +'",')
+                        feedbackFile.write(current_user.username+ ','+ '"'+date.isoformat() +'",')
 			feedbackFile.write('"'+request.form['feedback']+'"'+"\n")
 		return redirect(url_for('Home.show_home'))
 
