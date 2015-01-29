@@ -1,0 +1,68 @@
+{% from "macros.html" import render_field %}
+{% extends "layout.html" %}
+
+{% block body %}
+
+	{% include 'home/navigation.html' %}
+
+	<div class="mainContainer">
+		<div class="newsContainer">
+			{% with reminder = get_flashed_messages() %}
+			{% if reminder %}
+			<div>
+				{% for remind in reminder %}
+				{{ remind }}<br>
+				{% endfor %}
+			</div>
+			{% endif %}
+			{% endwith %}
+		<H1>Set Roles </H1>
+			<form method="POST" enctype="multipart/form-data">
+					<h4 style="margin-left:0; font-weight:normal;">Select User: </h4>
+							<select name="users", onchange="myFunction()">
+								{% for user in all_users %}
+								<option value={{ user.username }}>{{user.username}}</option>
+								{% endfor %}
+							</select>
+							
+					<h4 style="margin-left:0; font-weight:normal;">Select Role: </h4>
+							<select name="roles", onchange="myFunction()">
+								{% for r in roles %}
+								<option value={{ r.name }}>{{r.name}}</option>
+								{% endfor %}
+							</select>
+							<input class="btn btn-default" button type="submit" name="button" value="Update Role"></button>
+			<form>
+					
+	</div>
+	<H1>Define access roles </H1>
+	<div class="table-responsive">          
+      <table class="table">
+        <thead>
+          <tr>
+			<th> </th>
+            <th>View Files</th>
+            <th>HR Functionalities</th>
+			<th>See Projects</th>
+			<th>Uploading Files</th>
+          </tr>
+        </thead>
+		<form method="POST" enctype="multipart/form-data">
+        <tbody>
+          <tr>
+		{% for emp in list_of_emp %}
+          <td>{{emp.name}}</td>
+		  {% for i in range(4) %}
+            <td><input type="checkbox" name="{{emp.name}} {{loop.index}}" value="{{2**loop.index0}}" /></td>
+		  {% endfor %}
+          </tr>
+        {% endfor %}
+		  <input class="btn btn-default" button type="submit" name="button" value="Save Roles"></button>
+	</form>
+        </tbody>
+      </table>
+	 
+      </div>
+	  
+	
+{% endblock %}

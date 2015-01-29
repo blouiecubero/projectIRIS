@@ -1,0 +1,62 @@
+{% macro render_field(field, placeholder=None) %}
+{% if field.errors %}
+<div>
+{% elif field.flags.error %}
+<div>
+{% else %}
+<div>
+{% endif %}
+    {% set css_class = 'form-control ' + kwargs.pop('class', '') %}
+    {{ field(class=css_class, placeholder=placeholder, **kwargs) }}
+</div>
+{% endmacro %}
+
+{% extends "layout.html" %}
+{% block body %}
+<div class="loginContainer">
+
+    {% with errors = get_flashed_messages(category_filter=["error"]) %}
+    {% if errors %}
+    <div>
+        {% for error in errors %}
+            {{ error }}<br>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    {% if form.errors %}
+    <div>
+        {% for field, error in form.errors.items() %}
+            {% for e in error %}
+                {{ e }}<br>
+            {% endfor %}
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <form class="form-signin" role="form" action="{{url_for('Users.login')}}" method="post">
+        
+        <center>
+            <h2 class="form-signin-heading">Login to Iris</h2>
+        </center>
+        <br/><br/>
+        {{ form.csrf_token }}
+        {{ render_field(form.username, placeholder="Username", autofocus="") }}
+        <br/>
+        {{ render_field(form.password, placeholder="Password") }}
+        <br/>
+        <!--label class="checkbox">
+            <input type="checkbox" value="remember-me"> Remember me
+        </label-->
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Log in</button>
+    </form>
+
+    </div> <!-- /container -->
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+  
+</body>
+
+{% endblock %}

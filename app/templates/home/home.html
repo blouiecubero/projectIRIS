@@ -1,0 +1,73 @@
+{% from "macros.html" import render_field %}
+{% extends "layout.html" %}
+{% block body %}
+
+	{% include 'home/navigation.html' %}
+	<div class="mainContainer">
+		
+		{% include 'home/upload_picture_modal.html' %}
+		{% include 'home/left_sidebar.html' %}
+
+		<div class="mainContent">
+			<div class="upperContent">
+				<div id="detailsBox">
+					<div class="nickname">
+						{{user.first_name + " " + user.last_name}}
+						<br>Role:{{user.role.name}}
+						<select>
+							<option>@WFH</option>
+							<option>@Ecotower</option>
+							<option>@Meeting</option>
+						</select>
+					</div>
+					{% if current_user.is_administrator() or current_user.is_HR() %}
+					<a href = "{{url_for('Home.downloadFeedback')}}">See Feedbacks</a>
+					{% endif %}
+					<div id="statBox">
+						<table>
+							{% for project in utilizationProject %}
+								<tr>
+									<td>
+										<span class="projectUtilizationLabel" style="font-size:10px;">{{project.name}}</span>
+									</td>
+									<td>
+										<div class="projectUtilizationBar" style="width:{{project.percent}}%;">{{ project.percent}}%</div>
+									</td>
+								</tr>
+							{% endfor %}
+						</table>
+					</div>
+				</div>
+				<!--div id="appointBox">
+					<ul id="appointList">
+						<li>Sep 27</li>
+						<li>Oct 15</li>
+					</ul>
+				</div-->
+			</div>
+			<div class="newsContainer">
+				<h4 style="margin-left:0; font-weight:normal;">Headlines and Announcements:</h4>
+				<div class="feed">
+					<div class="headBar"><a href="#">Game Time</a> by HR </div>
+					<div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in ultricies lectus, et venenatis justo.</div>
+					<div></div>
+				</div>
+
+				<div class="feed">
+					<div class="headBar"><a href="#">ISO: Audit Log</a> by Chris Brock </div>
+					<div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in ultricies lectus, et venenatis justo. Sed scelerisque, lectus sit amet imperdiet egestas, libero quam efficitur felis, vel faucibus eros ante in mauris. </div>
+				</div>
+				
+				<div class="feed">
+					<div class="headBar"><a href="#">Test</a> by me </div>
+					{% for i in filebase %}
+					<div>{{ i.filename }}</div>
+					{% endfor %}
+				</div>
+				
+			</div>
+		</div>
+		{%include 'home/right_sidebar.html' %}
+	</div>
+
+{% endblock %}

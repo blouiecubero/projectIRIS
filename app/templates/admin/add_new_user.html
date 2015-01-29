@@ -1,0 +1,82 @@
+{% from "macros.html" import render_field %}
+{% extends "layout.html" %}
+
+{% block body %}
+
+	{% include 'home/navigation.html' %}
+
+	<div class="mainContainer">
+		<div class="newsContainer">
+			{% with reminder = get_flashed_messages() %}
+			{% if reminder %}
+			<div>
+				{% for remind in reminder %}
+				{{ remind }}<br>
+				{% endfor %}
+			</div>
+			{% endif %}
+			{% endwith %}
+	</div>
+	<H1>Create User: </H1>
+	<!--<form method="POST" enctype="multipart/form-data">
+		First name:<br>
+		<input type="text" name="firstname">
+		<br>
+		Middle name:<br>
+		<input type="text" name="middlename">
+		Last name:<br>
+		<input type="text" name="lastname">
+		<br>
+		Email:<br>
+		<input type="email" name="email">
+		Username:<br>
+		<input type="text" name="username">
+		<br>
+		Password<br>
+		<input type="password" name="lastname">
+		<h4 style="margin-left:0; font-weight:normal;">Select Role: </h4>
+							<select name="roles", onchange="myFunction()">
+								{% for r in roles %}
+								<option value={{ r.name }}>{{r.name}}</option>
+								{% endfor %}
+							</select>
+		<input class="btn btn-default" button type="submit" name="button" value="Create Role"></button>-->
+		
+	<form method="POST" enctype="multipart/form-data">
+	{{ form.csrf_token }}
+	Firstname
+	{{ render_field(form.fname,placeholder="First Name") }}
+	Middlename
+	{{ render_field(form.midname,placeholder="Middle Name") }}
+	Lastname
+	{{ render_field(form.lname,placeholder="Last Name") }}
+	Email
+	{{ render_field(form.email,placeholder="Email") }}
+	Username
+	{{ render_field(form.username,placeholder="Username") }}
+	Select Role
+	{{ render_field(form.select_role) }}
+	<br>
+	{{ render_field(form.submit) }}
+	</form>
+        </tbody>
+      </table>
+	 <div class="form-group">
+                        <div class="col-sm-9 col-sm-offset-3">
+                            <ul id="errors">
+                                {% with errors = get_flashed_messages(category_filter=["error"]) %}
+                                {% if errors %}
+                                <!--div-->
+                                    {% for error in errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                <!--/div-->
+                                {% endif %}
+                                {% endwith %}
+                            <ul>
+                        </div>
+                    </div>
+      </div>
+	  
+	
+{% endblock %}
