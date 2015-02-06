@@ -10,47 +10,52 @@
 	</div>
 	
 	<div class="col-md-10">
-		<H1>Define access roles </H1>
-		<div class="table-responsive">          
-			  <table class="table table-hover">
+	
+		<H1>Edit User Roles </H1>
+		<form method="POST" enctype="multipart/form-data">
+			<div class="table-responsive">          
+			  <table class="table table-bordered table-hover">
 				<thead>
 				  <tr>
 					<th> </th>
-					{% for i in list_of_perms %}
-					<th>{{i}}</th>
+					{% for r in roles %}
+					<th>{{r.name}}</th>
 					{% endfor %}
 				  </tr>
 				</thead>
 				
-			<form method="POST" enctype="multipart/form-data">
-			{% for role in list_of_roles %}
+			
 				<tbody>
 				  <tr>
+				{% for u in all_users %}
+
 				  <td>
 				  <a href="#" data-toggle="modal" data-target="#confirm-delete"><img src = "{{url_for('static', filename='assets/images/x.png') }}"></a>
-				  {{role.name}}
+				  {{u.username}}
 				  </td>
 				  
-				  {% for perms in list_of_perms %}
-					<td><input type="checkbox" name="{{role.name}} {{perms}}" value="{{perms}}" 
-					{% if perms in role.load_perms(role.name) %}
+				  
+				  {% for r in roles %}
+					<td><input type="checkbox" name="{{u.username}} {{r.name}}" value="{{r.name}}" 
+					{% if r in u.load_roles(u.username) %}
 					checked
 					{% endif %}
 					/></td>	
 				  {% endfor %}
 				  </tr>
-				  {% include 'admin/confirmation_roles_modal.html' %}
-				  {% endfor %}
-				  <input class="btn btn-primary" button type="submit" name="button" value="Save Permissions"></button>
+				  {% include 'admin/confirmation_users_modal.html' %}
+				{% endfor %}
+				
+				<input class="btn btn-primary" button type="submit" name="button" value="Save Roles"></input><br>
 			</form>
 				</tbody>
 			  </table>
-		 
-		</div>
+			 
+			</div>
 	</div>
 	
-	
 	<div class="col-md-1">
+
 	</div>
 	
 {% endblock %}

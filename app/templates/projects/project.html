@@ -1,3 +1,4 @@
+{% if current_user.check_perms('See Projects', user_perms) %}
 {% extends "layout.html"%}
 {% block body %}
 	{% include 'home/navigation.html' %}
@@ -80,3 +81,4 @@
 	</div>
 	
 {% endblock %}
+{% endif %}

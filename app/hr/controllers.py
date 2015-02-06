@@ -6,17 +6,17 @@ from flask import Blueprint, render_template, request, redirect, url_for, g, ses
 from flask.ext.login import current_user
 from app.database import db_session, Base, init_db
 from app.users.models import User, UserStatistics
-from app.leaves.forms import datePicking
+from app.hr.forms import datePicking
 from app.finance.helpers import Store_Users
 # from forms import signIn, datePicking, dummy
 # from app import app
 # from models import db, User, UserStatistics, Dummy
 
 
-Leaves = Blueprint('Leaves', __name__,)
+HR = Blueprint('HR', __name__,)
 store_user = Store_Users()
 
-@Leaves.route('/leaves', methods=['GET', 'POST'])
+@HR.route('/leaves', methods=['GET', 'POST'])
 def leaves():
 	form = datePicking() # datePicking class
 	g.user = current_user
@@ -98,7 +98,7 @@ def leaves():
 
 # ==========================================================================
 
-@Leaves.route('/summary', methods=['GET', 'POST'])
+@HR.route('/summary', methods=['GET', 'POST'])
 def summary():
 	form = datePicking() # datePicking class
 

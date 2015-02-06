@@ -12,10 +12,22 @@ from app.users.controllers import getProfilePicture, getUtilization
 # @define - blueprint for home
 Home = Blueprint('Home', __name__,)
 
-## This enables permissions to run on all functions.
+## This enables permissions to run in every template.
 @Home.app_context_processor
 def inject_permissions():
-    return dict(Permission=Permission)
+    ## If user hasn't no active role yet:
+
+    if current_user.active_role is None:
+        return dict(user_perms = current_user.init_active_roles(current_user.username),
+                    user = current_user, role=current_user.load_roles(current_user.username))
+    ## However, if there is an active role set:
+    elif current_user.active_role == 'None':
+        return dict(user_perms =[ ],
+                    user = current_user, role=current_user.load_roles(current_user.username))
+
+    return dict(user_perms = current_user.load_perms(current_user.active_role),
+                    user = current_user,role=current_user.load_roles(current_user.username))
+
 
 # @function - Renders the home page
 @Home.route('/')
@@ -25,7 +37,7 @@ def show_home():
 	print "Home"
 	upload_picture_form = UploadProfilePictureForm(request.form)
 	url_for_profile_picture = getProfilePicture()
-##	utilizationProject = getUtilization(current_user)
+##	utilizationProject = getUtilization(current_user)Permission=Permission
 	print url_for_profile_picture
 ##	file_owner = User.query.filter_by(username=current_user.username).first()
 ##        all_users = User.query.all() # Loads up all the registered users.

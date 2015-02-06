@@ -9,7 +9,7 @@ from wtforms.validators import Required, Email, EqualTo, Length, Regexp
 
 # Define the login form (WTForms)
 class MultiCheckboxField(SelectMultipleField):
-    widget = widgets.ListWidget(prefix_label=False)
+    widget = widgets.TableWidget()
     option_widget = widgets.CheckboxInput()
     
 class LoginForm(Form):
@@ -45,7 +45,7 @@ class AddUserForms(Form):
         Required(), Length(1,64), Regexp('[A-za-z][A-Za-z0-9_.]*$', 0,
                                          'Usernames must have only letters,'
                                          'numbers, dots or underscores')])
-    select_role = SelectField('Choose Role',coerce=int)
+    select_role = SelectMultipleField('Choose Role (To choose more than 1, press and hold Ctrl button, then click to your second choice)',coerce=int)
     submit = SubmitField('Register')
 
 class DeleteUserForms(Form):

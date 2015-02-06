@@ -1,7 +1,8 @@
+{% if current_user.check_perms('HR Functionalities', user_perms) %}
 {% from "macros.html" import render_field %}
 {% extends "layout.html" %}
 {% block body %}
-{% if current_user.is_HR %}
+
     {% include 'home/navigation.html' %}
     <div class="jumbotron">
      <div class="container">
@@ -109,3 +110,4 @@
   </div>
 
 {% endblock %}
+{% endif %}
