@@ -1,0 +1,17 @@
+<div class="projectsContainer">
+	<ul id="projectNav">
+		{% for project in utilizationProject %}
+		    <li>
+		    	<div class="projectItem">
+		    		<a href="#">{{project.name}}</a>
+					<!--a><h4>Project Manager</h4></a-->
+					<div>
+						<!--a class="conn" href="#">N connections
+						<span class="rate">{{project.percent}}</span>
+						</a-->
+					</div>
+		    	</div>
+		    </li>
+		{% endfor %}
+	</ul>
+</div>

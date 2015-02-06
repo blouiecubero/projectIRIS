@@ -1,0 +1,15 @@
+{% if current_user.check_perms('Administrator', user_perms) %}
+{% extends "layout.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+
+{% block body %}
+{% include 'home/navigation.html' %}
+{% include 'flash_message.html' %}
+<div class="col-md-4">
+	<h1>Add User</h1>
+    {{ wtf.quick_form(form) }}
+</div>
+{% endblock %}
+{% endif %}
+

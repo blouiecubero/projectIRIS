@@ -1,0 +1,47 @@
+{% if current_user.check_perms('Administrator', user_perms) %}
+{% from "macros.html" import render_field %}
+{% extends "layout.html" %}
+
+{% block body %}
+
+	{% include 'home/navigation.html' %}
+	{% include 'flash_message.html' %}
+	
+	<div class="col-md-1">
+	</div>
+	
+	<div class="col-md-10">
+		<H1>Create Role: </H1>
+		<form method="POST" enctype="multipart/form-data">
+			{{ render_field(form.rolename) }}
+			<H1>Define access roles </H1>
+			<div class="table-responsive">          
+			  <table class="table">
+				<thead>
+				  <tr>
+					<th> </th>
+					{% for i in types_of_permissions %}
+					<th>{{i}}</th>
+					{% endfor %}
+				  </tr>
+				</thead>
+				<tbody>
+				  <td>Permissions</td
+				  <tr>
+					{% for perms in types_of_permissions %}
+					<td><input type="checkbox" name="{{perms}}" value="{{perms}}" /></td>
+					{% endfor %}
+				  </tr>
+				  <input class="btn btn-default" button type="submit" name="button" value="Create Role"></button>
+		</form>
+				</tbody>
+			</table>
+	 
+			</div>
+	</div>
+	
+	<div class="col-md-1">
+	</div>
+	
+{% endblock %}
+{% endif %}

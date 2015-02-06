@@ -1,0 +1,45 @@
+{% if current_user.check_perms('HR Functionalities', user_perms) %}
+{% from "macros.html" import render_field %}
+{% extends "layout.html" %}
+{% block body %}
+
+  {% include 'home/navigation.html' %}
+    <div class="jumbotron">
+      <div class="container">
+        <h1>Hi, {{user.username}}!</h1>
+
+        <h3>You have applied for the following dates: </h3>
+
+        <div class="row">
+          <div class="col-md-6">
+            <form method=post >
+              {{ form.hidden_tag() }}
+
+              <table class="table">
+                <tbody>
+                  <tr>
+                		<th> Sick Leave: </th>
+                      <td> {{ slSummary }} </td>
+                 	</tr>
+
+                 	<tr>
+                 		<th> Vacation Leave: </th>
+                      <td> {{ vacationSummary }} </td> 
+                	</tr>
+                 	
+                  <tr>
+                 		<th> Offset days: </th>
+                      <td> {{ offsetSummary }} </td> 
+                 	</tr>
+                <tbody>
+              </table>
+
+              <button class="btn btn-lg btn-primary btn-block" type="submit" name="button"> Go Back </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+{% endblock %}
+{% endif %}
