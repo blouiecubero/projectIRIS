@@ -2,6 +2,10 @@
 
 ------
 
+## Code Setup
+For compatibility issues with the scripts deployed in Seerlabs, it is advisable to always setup the main folder as `/appl/iris` and the environment folder as `/appl/iris-env`
+
+
 ## Running the App
 Scripts for running the main Flask App with uWSGI are now available under /appl/iris/. There are currently two modes:
 
