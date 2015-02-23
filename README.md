@@ -3,7 +3,7 @@
 ------
 
 ## Running the App
-Scripts for running the main Flask App with uWSGI are now available. There are currently two modes:
+Scripts for running the main Flask App with uWSGI are now available under /appl/iris/. There are currently two modes:
 
 #### Running uWSGI in CLI
 - ./start.sh
