@@ -1,1 +1,1 @@
-sudo /appl/env/bin/uwsgi --ini /appl/iris/uwsgid.ini
+sudo /appl/iris-env/bin/uwsgi --ini /appl/iris/uwsgid.ini
