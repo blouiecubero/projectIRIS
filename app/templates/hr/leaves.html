@@ -1,0 +1,79 @@
+
+{% from "macros.html" import render_field %}
+{% extends "layout.html" %}
+{% block body %}
+
+    {% include 'home/navigation.html' %}
+	{% include 'flash_message.html' %}
+    <div class="jumbotron">
+     <div class="container">
+      <h1>Hi, {{user.username}}! </h1>
+
+      <h3>Current leave statistics: </h3>
+
+      <div class="row">
+        <div class="col-md-6">
+          <form action = "{{ url_for('HR.leaves') }}" method=post>
+           {{ form.hidden_tag() }} 
+
+            <table class="table">
+              <thead
+              <tr>
+                    <td></td>
+                    <td> No. of available leaves:</td>
+                    <td> Input dates for leave: </td>
+
+                <tr>
+              </thead>
+
+              <tbody>
+             		<th>Sick Leave: </th>
+                  <td> {{ leaveData.sl }} </td> <!-- Fetched from DB -->
+                  <td> 
+					{% if leaveData.sl != 0%}
+                    <input type="Text" id="sickDateField" name="sickDateField" class="form-control" placeholder="mm-dd-yyyy"> 
+                    <script> jQuery('#sickDateField').datepicker({ format: 'mm-dd-yy', clearBtn: true, multidate: true, multidateSeparator: ";", todayHighlight: true }); </script>
+					<button class="btn btn-primary" type="submitButton" value="submitSl" name = "submitSl"> Submit Sick Leave </button>
+					{% elif leaveData.sl == 0 %}
+					No more Sick Leaves Remaining
+					{% endif %}
+					</td>	
+               	<tr>
+				
+               	  <th> Vacation Leave: </th>
+                    <td> {{ leaveData.vl }} </td> <!-- Fetched from DB -->
+                    <td>
+					  {% if leaveData.vl != 0%}
+                      <input type="Text" id="vacationDateField" name="vacationDateField" class="form-control" placeholder="mm-dd-yyyy">
+                      <script> jQuery('#vacationDateField').datepicker({ format: 'mm-dd-yy',clearBtn: true, multidate: true, multidateSeparator: ";", todayHighlight: true });</script>
+					  <button class="btn btn-primary" type="submitButton" value="submitVl" name = "submitVl"> Submit Vacation Leave </button>
+					  {% endif %}
+                    </td>
+              	</tr>
+               	
+                <tr>
+               		<th> Offset days: </th>
+                     <td> {{ leaveData.offset }} </td> <!-- Fetched from DB -->
+                    <td>
+					{% if leaveData.offset != 0 %}
+                      <input type="Text" id="offsetDateField" name="offsetDateField" class="form-control" placeholder="mm-dd-yyyy"> 
+                      <script> jQuery('#offsetDateField').datepicker({format: 'mm-dd-yy', clearBtn: true, multidate: true, multidateSeparator: ";", todayHighlight: true }); </script>
+					  <button class="btn btn-primary" type="submitButton" value="submitOd" name = "submitOd"> Submit Offset Date </button>
+					{% endif %}
+                    </td>
+               	</tr>
+     
+              </tbody>
+            </table>
+			<br><br>
+           <h3>Apply Offset Days: </h3>
+		   <input type="number" name="quantity" min="1" max="50">
+		   <button class="btn btn-primary" type="submitButton" value="submitOffsetDays" name = "submitOffsetDays"> Apply Offset Days </button>
+          </form>
+        </div>
+      </div>
+    </div> <!-- end div class="col-md-6" -->
+  </div>
+
+
+{% endblock %}

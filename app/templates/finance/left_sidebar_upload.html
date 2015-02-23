@@ -1,0 +1,14 @@
+{% if current_user.check_perms('Upload Payslip', user_perms) %}
+<div class="leftCol-md-2">
+		<div class= "editProfilePicture" data-toggle="modal" data-target="#uploadFile">
+		
+			<!--a href="#"-->
+			{% if current_user.check_perms('Upload Payslip', user_perms) %}
+			<img src="{{url_for('static', filename='assets/images/up.png') }}"/>
+			<span>Upload Payslip</span>
+			{% endif %}
+		</div>
+</div>
+{% endif %}
+
+

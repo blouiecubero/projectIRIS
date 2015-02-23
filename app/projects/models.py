@@ -1,4 +1,4 @@
- # Import the database object (db) from the main application module
+# Import the database object (db) from the main application module
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, Text
 from sqlalchemy.exc import DatabaseError, IntegrityError
 from app.database import Base

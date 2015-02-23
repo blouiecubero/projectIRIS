@@ -10,11 +10,13 @@ from sqlalchemy.sql import exists
 from sqlalchemy import or_
 from flask.ext.uploads import UploadSet, IMAGES, configure_uploads
 from app.database import db_session, Base,init_db
-from app.users.forms import LoginForm, ChangePasswordForm, DeleteUserForms, AddRolesForm, AddUserForms
-from app.users.models import User, ProfileImage, Role, Permission
+from app.users.forms import LoginForm, ChangePasswordForm, AddRolesForm, AddUserForms, UploadProfilePictureForm
+from app.users.models import User, ProfileImage, Role, Permission, UserStatistics
 from app.projects.models import Project
 from app.users.helpers import Role_Determinator
-from app.decorators.controllers import admin_required
+from config import ADMIN
+
+##from app.decorators.controllers import admin_required
 from app import login_manager, oid, imageUploadSet
 
 # @define - blueprint for users
@@ -26,7 +28,18 @@ role_change = Role_Determinator()
 ## This enables permissions to run on all functions.
 @Users.app_context_processor
 def inject_permissions():
-    return dict(Permission=Permission)
+    ## If user hasn't no active role yet:
+
+    if current_user.active_role is None:
+        return dict(user_perms = current_user.init_active_roles(current_user.username),
+                    user = current_user, role=current_user.load_roles(current_user.username))
+    ## However, if there is an active role set:
+    elif current_user.active_role == 'None':
+        return dict(user_perms =[ ],
+                    user = current_user, role=current_user.load_roles(current_user.username))
+
+    return dict(user_perms = current_user.load_perms(current_user.active_role),
+                    user = current_user,role=current_user.load_roles(current_user.username))
 
 # @function - Used to add an object to a database [Could be move to another class to make this more reusable by other objects]
 def add_to_db(object):
@@ -65,133 +78,236 @@ def login():
         flash('Wrong username or password', 'error-message')
     return render_template("users/login.html", form=form)
 
-##@Users.route('/add_users', methods=['GET','POST'])
-##@admin_required
-##def add_users():
-##    form = AddUserForms()
-##    if form.validate_on_submit():
-##        print ok
-##        flash('User Created')
-##        return redirect(url_for('Users.add_users'))
-##    return render_template('admin/add_user.html', form = form, user = current_user)
-
-@Users.route('/add_users', methods=['GET','POST'])
-@admin_required
+@Users.route('/admin/add_users', methods=['GET','POST'])
 def add_users():
     form = AddUserForms(request.form)
-    form.select_role.choices = [(role.id, role.name)
-                                for role in Role.query.all()]
+    all_users = User.query.all()
+    form.select_role.choices = [(role.id, role.name)        ## Loads up choices
+                                for role in Role.query.all()] 
+    ## load roles that had supervisor roles in it:
+ 
+
+    form.select_supervisor.choices = [(user.username, user.username)
+                                     for user in User.query.all() if user.is_supervisor]
+
+    print form.select_role.choices 
     if form.validate_on_submit():
-        password = generate_password_hash('seer')
-        u = User (form.fname.data,form.midname.data,form.lname.data,
+        password = generate_password_hash('seer')       
+        u = User (form.fname.data,form.midname.data,form.lname.data,    ## Load user
                   form.email.data,form.username.data,password)
-        u.role = Role.query.get(form.select_role.data)
+        print form.select_role.data
+
+        for i in form.select_role.data:  ## Loads up the selected choices of the user
+            print i 
+            u.role.append(Role.query.get(i))
         print u.role
+
+        ##Checks if the user is a supervisor
+        if form.check_if_supervisor.data:
+            u.is_supervisor = True
+
+        ## Loads up the supervisor of the user, and loads up the user to its supervisor
+        u.supervisor = form.select_supervisor.data
+        print form.select_supervisor.data
+
+        supervisor = User.query.filter_by(username=form.select_supervisor.data).first()
+        if supervisor.supervisee is None or '': 
+            
+            supervisor.supervisee = u.username
+            print supervisor.supervisee
+        else:
+            supervisor.supervisee = supervisor.supervisee + ' ' + u.username
+            print supervisor.supervisee
+
         db_session.add(u)
+        db_session.add(supervisor)
+        db_session.commit()
+
+        us = UserStatistics(userId=u.id)
+        us.sl = form.number_of_sick_leaves.data
+        us.vl = form.number_of_vacation_leaves.data
+        us.offset = 0
+        db_session.add(us)
         db_session.commit()
         flash('User Created')
         return redirect(url_for('Users.add_users'))
-    return render_template('admin/add_user.html', form = form, user = current_user)
+    return render_template('admin/add_user.html', form = form)
 
-@Users.route('/delete_users', methods=['GET','POST'])
-@admin_required
-def delete_users():
-    form = DeleteUserForms(request.form)
-    form.chosen_user.choices = [(user.id, user.username)
-                                for user in User.query.all()]
-    if form.validate_on_submit():
-        u = User.query.get(form.chosen_user.data)
-        print u
+@Users.route('/delete_users/<user>', methods=['GET','POST'])
+def delete_users(user):
+    print user
+    ## Checks if the user is an admin
+    if current_user.is_admin(current_user.username):
+        u = User.query.filter_by(username=user).first()
+        us = UserStatistics.query.filter_by(userId=u.id).first()
+
+        # loads the supervisor and deletes the user
+        load_supervisor = u.supervisor
+        supervisor = User.query.filter_by(username=load_supervisor).first()
+        load_supervisees = supervisor.supervisee
+        print "Load supervisee before split: " + str(load_supervisees)
+        load_supervisees = load_supervisees.split(' ')
+        print "Load supervisee after split: " + str(load_supervisees)
+        load_supervisees.remove(u.username)
+        supervisor.supervisee = ' '.join(load_supervisees)
+        print supervisor.supervisee
         db_session.delete(u)
+        db_session.add(supervisor)
         db_session.commit()
         flash('User Deleted')
-        return redirect(url_for('Users.delete_users'))
-    return render_template('admin/delete_user.html', form = form, user = current_user)
+        return redirect(url_for('Users.set_roles'))
+    flash('USER UNAUTHORIZED')
+    return redirect(url_for('Home.show_home'))
+    
 
-
-@Users.route('/add_roles', methods=['GET','POST'])
-@admin_required
+@Users.route('/admin/add_roles', methods=['GET','POST'])
 def add_roles():
     form = AddRolesForm(request.form)
-    types_of_permissions = ['VF','HR','SP','UF']
-    permit = 0x00
+    admin = Permission.query.filter_by(permission_name='Administrator').first()
+    types_of_permissions = Permission.query.all()
+    types_of_permissions.remove(admin) ## Remove admin permission in assignment of permssions
+    roles = Role.query.all()
+
     if request.method == 'POST':
-        rolename = form.rolename.data
-        for perm_type in types_of_permissions:
-            print perm_type
-            get_val = request.form.get(str(perm_type))
-            print get_val
+
+        role = form.rolename.data
+        rolename = str(role)
+        print type(rolename)
+
+        if rolename.isspace() or not rolename: ## Checks if the rolename is empty
+            flash('Insert name!')
+            return redirect(url_for('Users.add_roles'))
+
+        for r in roles: ## Checks if the rolename is currently existing
+            temp_role = str(r.name)
+            if temp_role.lower() == rolename.lower(): ## Checks if the rolename has a lowercase/uppercase counterpart
+                flash('Role Currently Exists!')
+                return redirect(url_for('Users.add_roles'))
+
+        ## Creation of roles proper
+        r = Role(rolename)
+
+        ## Assigns all permissions checked to the created role
+        ## The loop checks each checkboxes if it was checked or not
+        for p in types_of_permissions: 
+            perm = p.permission_name
+            get_val = request.form.get(str(perm))
             if get_val is not None:
-                permit = permit | int(get_val)
-        print 'PERMISSION: ' + str(permit)
-        print rolename
-        role_change.define_permissions(rolename,permit)
-        role_change.record_roles()
+                p = Permission.query.filter_by(permission_name=get_val).first()
+                print p
+                r.permissions.append(p)     
+        print r.permissions
+        db_session.add(r)
+        db_session.commit()
         flash('Role Created')
         return redirect(url_for('Users.add_roles'))
-##    if form.validate_on_submit():
-##        print form.example.data
-##    else:
-##        print form.errors
-    return render_template('admin/add_roles.html', form = form, types_of_permissions = types_of_permissions, user = current_user)
+    return render_template('admin/add_roles.html', form = form, types_of_permissions = types_of_permissions)
 
-@Users.route('/delete_roles', methods=['GET','POST'])
-@admin_required
-def delete_roles():
-    roles = Role.query.all()
-    list_of_emp = []
-    for i in roles:
-        if i.name != 'Administrator':
-            list_of_emp.append(i)
-    if request.method == 'POST':
-        whatrole = request.form['roles']
-        print whatrole
+@Users.route('/delete_roles/<whatrole>', methods=['GET','POST'])
+def delete_roles(whatrole):
+    print whatrole
+    if current_user.is_admin(current_user.username):
         role = Role.query.filter_by(name=whatrole).first()
         db_session.delete(role)
         db_session.commit()
         flash('Role deleted.')
-        return redirect(url_for('Users.delete_roles'))
-    return render_template('admin/delete_roles.html', list_of_emp = list_of_emp, user = current_user)
+        return redirect(url_for('Users.change_permissions'))
+    flash('USER UNAUTHORIZED')
+    return redirect(url_for('Home.show_home'))
 
-
-@Users.route('/edit_permissions', methods=['GET','POST'])
-@admin_required
-def change_permissions():
+@Users.route('/admin/set_roles', methods=['GET','POST'])
+##@admin_required
+def set_roles():
     all_users = User.query.all()
     roles = Role.query.all()
-    list_of_emp = []
-    for i in roles:
-        if i.name != 'Administrator':
-            list_of_emp.append(i)
+
+    ## FILTER SUPERADMIN USER
+    for i in all_users:
+        if i.username == ADMIN:
+            all_users.remove(User.query.filter_by(username=ADMIN).first())
+
+
     if request.method == 'POST':
-        
-            if request.form['button'] == 'Update Role': ## Updates the permissions of roles
-                whosuser = request.form['users']
-                whatrole = request.form['roles']
-                user = User.query.filter_by(username=whosuser).first()
-                user.role = Role.query.filter_by(name=whatrole).first()
-                db_session.add(user)
-                db_session.commit()
-                flash('Role changed.')
-                return redirect(url_for('Users.change_permissions'))
-            
-            elif request.form['button'] == 'Save Roles':
-                for emp_type in list_of_emp:
-                    permit = 0x00
-                    for index_num in range(4): ## number of permissions
-                        type = emp_type.name + ' ' + str(index_num + 1)
-                        print type
-                        get_val = request.form.get(str(type))
-                        print get_val
-                        if get_val is not None:
-                            permit = permit | int(get_val)
-                    print permit
-                    role_change.define_permissions(emp_type.name,permit)
-                    print role_change.role
-                    role_change.record_roles()
-                flash('Permissions changed.')
-                return redirect(url_for('Users.change_permissions'))
-    return render_template('admin/edit_permissions.html',list_of_emp=list_of_emp, all_users=all_users, roles=roles, user=current_user)
+
+        ## This loop checks all the users and assign all the roles assigned by the administrator
+        ## Like the previous checking loop, this loop does the same, checking each checkboxes, 
+        ## and assign the checked values to the User roles.
+        for user in all_users:
+            u = User.query.filter_by(username=user.username).first()
+            u.role = []
+            for r in roles: 
+                type = u.username + ' ' + r.name
+                print type
+                get_val = request.form.get(str(type))
+                if get_val is not None:
+                    erole = Role.query.filter_by(name=str(get_val)).first() ##Entered role
+                    print 'ENTERED! ' + str(erole)
+                    u.role.append(erole)
+            print str(u.username) + ' ' + str(u.role)
+            db_session.add(u)
+            u.init_active_roles(u.username)
+        db_session.commit()
+        flash('Role changed.')
+        return redirect(url_for('Users.set_roles'))
+    return render_template('admin/set_roles.html', all_users=all_users, roles=roles, ADMIN=ADMIN)       
+
+
+@Users.route('/admin/edit_permissions', methods=['GET','POST'])
+##@admin_required
+def change_permissions():
+    ## This block filters the admin role and permissions
+
+    all_users = User.query.all()
+    list_of_roles = Role.query.all()
+    list_of_perms = Permission.query.all()
+    admin_role = Role.query.filter_by(name='Administrator').first()
+    admin_perms = Permission.query.filter_by(permission_name='Administrator').first()
+    list_of_roles.remove(admin_role)
+    list_of_perms.remove(admin_perms)
+
+    ## Endblock
+    print list_of_perms
+    if request.method == 'POST':        
+        for roles in list_of_roles:
+            role = Role.query.filter_by(name=roles.name).first()
+            role.permissions = []
+            for perms in list_of_perms: ## number of permissions
+                type = roles.name + ' ' + perms.permission_name 
+                print type
+                get_val = request.form.get(str(type))
+                if get_val is not None:
+                    p = Permission.query.filter_by(permission_name=str(get_val)).first()
+                    print 'ENTERED! ' + str(p)
+                    role.permissions.append(p)
+            print role.permissions
+            db_session.add(role)
+        db_session.commit()
+        flash('Permissions changed.')
+        return redirect(url_for('Users.change_permissions'))
+    return render_template('admin/edit_permissions.html',list_of_roles=list_of_roles, 
+                            list_of_perms=list_of_perms, all_users=all_users)
+
+## This function changes the permissions upon entering the new role chosen by the user.
+@Users.route('/change_active_role/<role>', methods=['GET','POST'])
+def change_active_role(role):
+    prev_role = Role.query.filter_by(name=current_user.active_role).first()
+    r = Role.query.filter_by(name=role).first()
+    if prev_role == r:
+        return redirect(url_for('Home.show_home'))
+    current_user.active_role = r.name
+    flash('ACTIVE ROLE CHANGED')
+    return redirect(url_for('Home.show_home'))
+
+
+@Users.route('/profile/<user>', methods=['GET','POST'])
+def profile(user):
+    upload_picture_form = UploadProfilePictureForm(request.form)
+    url_for_profile_picture = getProfilePicture()
+    u = User.query.filter_by(username=user).first()
+    us = UserStatistics.query.filter_by(userId=u.id).first()
+    return render_template('users/profile.html', user = u, userleaves=us, upload_picture_form = upload_picture_form,
+                            profile_picture=url_for_profile_picture)
+
 
 @Users.route('/change_password/',methods=['GET','POST'])
 @login_required
@@ -214,7 +330,7 @@ def change_password():
                 flash("Passwords do not match",'error')
         else:   
             flash('Wrong password', 'error')
-    return render_template("users/change_password.html", form=form, user=user)
+    return render_template("users/change_password.html", form=form)
 
 @Users.route('/logout')
 def logout():
@@ -300,24 +416,5 @@ def getUtilization(user):
     #http://www.seerlabs.com:5556/api/getNewsfeed
     #http://www.seerlabs.com:5556/api/getProject
 
-#pragma mark -Test block to install database and add a default user
-def add_user(c):
-    """try:"""
-    db_session.add(c)
-    db_session.flush()
-    return True
-    """except sqlalchemy.exc.IntegrityError as err:
-        # @todo: handle as appropriate: return existing instance [session.query(Coupon).filter(Coupon.value==c.value).one()] or re-raise
-        #logger.error("Tried to add a duplicate entry for the Coupon value [%s]. Aborting", c.value)
-        print "Tried to add a duplicate entry for the Coupon value [%s]. Aborting", c.name
-        return False"""
-""""
-init_db();
-u = User('Te','re','suh', 'test@seer-technologies.com', "seer", generate_password_hash("seertech"), )
-if(add_user(u)):
-    db_session.commit()
-else:
-    print "aww"
-print u.id"""
 
 

@@ -4,6 +4,7 @@
 
 	{% include 'home/navigation.html' %}
 	{% include 'finance/upload_payslip_modal.html' %}
+	{% include 'flash_message.html' %}
 	{% include 'finance/left_sidebar.html' %}
 	<div class="mainContent">
 			<div class="upperContent">
@@ -38,7 +39,7 @@
 					</ul>
 				</div-->
 			</div>
-	{% if current_user.can_upload_files() %}
+	{% if current_user.check_perms('Upload Files', user_perms) %}
 	<div class="mainContainer">
 		<div class="newsContainer">
 			<form method="POST" enctype="multipart/form-data">
@@ -65,18 +66,5 @@
 						</div>
 	{% endif %}
 	</div>
-	{% if current_user.can_see_projects() or current_user.is_HR() %}
-	<h4 style="margin-left:0; font-weight:normal;">File List for {{ user.username }}:</h4>
-						<div class="feed">
-							{% for file in files_of_the_current_user %}
-							<div>Filename: <a href = "http://127.0.0.1:5000/uploads/payslip/{{ file.filename }}">{{file.filename}}</a></div>
-							<div>Date uploaded: {{ moment(file.date).fromNow() }}</div>
-							{% if current_user.can_upload_files() %}
-							<div><a href = "{{url_for('PaySlip.delete_payslip', file_name = file.filename) }}">Delete File</a></div>
-							{% endif %}
-							{% endfor %}
-							<div></div>
-						</div>
-	{% endif %}
 	
 {% endblock %}

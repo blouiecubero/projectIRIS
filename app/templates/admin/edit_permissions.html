@@ -1,68 +1,57 @@
+{% if current_user.check_perms('Administrator', user_perms) %}
 {% from "macros.html" import render_field %}
 {% extends "layout.html" %}
 
 {% block body %}
 
 	{% include 'home/navigation.html' %}
-
-	<div class="mainContainer">
-		<div class="newsContainer">
-			{% with reminder = get_flashed_messages() %}
-			{% if reminder %}
-			<div>
-				{% for remind in reminder %}
-				{{ remind }}<br>
-				{% endfor %}
-			</div>
-			{% endif %}
-			{% endwith %}
-		<H1>Set Roles </H1>
-			<form method="POST" enctype="multipart/form-data">
-					<h4 style="margin-left:0; font-weight:normal;">Select User: </h4>
-							<select name="users", onchange="myFunction()">
-								{% for user in all_users %}
-								<option value={{ user.username }}>{{user.username}}</option>
-								{% endfor %}
-							</select>
-							
-					<h4 style="margin-left:0; font-weight:normal;">Select Role: </h4>
-							<select name="roles", onchange="myFunction()">
-								{% for r in roles %}
-								<option value={{ r.name }}>{{r.name}}</option>
-								{% endfor %}
-							</select>
-							<input class="btn btn-default" button type="submit" name="button" value="Update Role"></button>
-			<form>
-					
+	{% include 'flash_message.html' %}
+	<div class="col-md-1">
 	</div>
-	<H1>Define access roles </H1>
-	<div class="table-responsive">          
-      <table class="table">
-        <thead>
-          <tr>
-			<th> </th>
-            <th>View Files</th>
-            <th>HR Functionalities</th>
-			<th>See Projects</th>
-			<th>Uploading Files</th>
-          </tr>
-        </thead>
-		<form method="POST" enctype="multipart/form-data">
-        <tbody>
-          <tr>
-		{% for emp in list_of_emp %}
-          <td>{{emp.name}}</td>
-		  {% for i in range(4) %}
-            <td><input type="checkbox" name="{{emp.name}} {{loop.index}}" value="{{2**loop.index0}}" /></td>
-		  {% endfor %}
-          </tr>
-        {% endfor %}
-		  <input class="btn btn-default" button type="submit" name="button" value="Save Roles"></button>
-	</form>
-        </tbody>
-      </table>
-	 
-      </div>
-	  
+	
+	<div class="col-md-10">
+		<H1>Define access roles </H1>
+		<div class="table-responsive">          
+			  <table class="table table-hover">
+				<thead>
+				  <tr>
+					<th> </th>
+					{% for i in list_of_perms %}
+					<th>{{i}}</th>
+					{% endfor %}
+				  </tr>
+				</thead>
+				
+			<form method="POST" enctype="multipart/form-data">
+			{% for role in list_of_roles %}
+				<tbody>
+				  <tr>
+				  <td>
+				  <a href="#" data-toggle="modal" data-target="#confirm-delete-{{ loop.index }}"><img src = "{{url_for('static', filename='assets/images/x.png') }}"></a>
+				  {{role.name}}
+				  </td>
+				  
+				  {% for perms in list_of_perms %}
+					<td><input type="checkbox" name="{{role.name}} {{perms}}" value="{{perms}}" 
+					{% if perms in role.load_perms(role.name) %}
+					checked
+					{% endif %}
+					/></td>	
+				  {% endfor %}
+				  </tr>
+				  {% include 'admin/confirmation_roles_modal.html' %}
+				  {% endfor %}
+				  <input class="btn btn-primary" button type="submit" name="button" value="Save Permissions"></button>
+			</form>
+				</tbody>
+			  </table>
+		 
+		</div>
+	</div>
+	
+	
+	<div class="col-md-1">
+	</div>
 	
 {% endblock %}
+{% endif %}

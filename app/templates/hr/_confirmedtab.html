@@ -1,0 +1,195 @@
+	<div class = "confirmed" class="tab-pane fade">
+		<div class="accordion" id="accordion2">
+		  <div class="accordion-section">
+			<div class="accordion-section-title">
+			  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseFour">
+				Sick Leaves
+			  </a>
+			</div>
+			<div id="collapseFour" class="accordion-body collapse in">
+			  <div class="accordion-inner">
+					<table class="table table-bordered table-hover">
+						<thead>
+							<tr>
+								<th>User</th>
+								<th>Leave dates applied</th>
+								<th>Date applied</th>
+								<th>Date confirmed</th>
+								<th>Status</th> 
+								
+							</tr>
+						</thead>
+						<tbody>
+						
+						{% for i in all_users %}
+						{% set u = current_user.return_user(i) %}
+						{% if u %}
+						{% set user_info = u.return_sickLeaves(u.username) %}
+						{% if user_info %}
+						{% for us, e in user_info.iteritems() %}
+						{% if e == 1 or e ==2 or e==4  %}
+						<tr>
+								<td>	 {{ u.username }}	</td>
+								<td>	 {{ us }}	</td>
+								
+								{% if e == 4 %}
+								<td> {{ u.format_one_date(u.return_date_pending_cancellation(u.username, us, 'sickleave' ))}} </td>
+								<td> {{  u.format_one_date(u.return_date_confirmed_cancellation(u.username, us, 'sickleave' ))}} </td>
+								{% elif e == 1 or e == 2 %}
+								<td> {{  u.format_one_date(u.return_date_pending(u.username, us, 'sickleave' ))}} </td>
+								<td> {{  u.format_one_date(u.return_date_decided(u.username, us, 'sickleave' ))}} </td>
+								{% endif %}
+								
+								{% if e == 1 %}
+								<td class="success">Confirmed</td>
+								{% elif e == 2 %}
+								<td class="danger">Denied</td>
+								{% elif e == 4 %}
+								<td class="danger">Cancelled</td>
+								{% endif %}
+								
+								{% endif %}
+								{% endfor %}
+						</tr>
+						{% endif %}
+						{% endif %}
+						{% endfor %}
+						
+						</tbody>
+					</table>
+				</tr>
+			  </div>
+			</div>
+		  </div>
+		  <div class="accordion-section">
+			<div class="accordion-section-title">
+			  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseFive">
+							 Vacation Leave 
+			  </a>
+			</div>
+			<div id="collapseFive" class="accordion-body collapse">
+			  <div class="accordion-inner">
+					<table class="table table-bordered table-hover">
+						<thead>
+							<tr>
+								<th>User</th>
+								<th>Leave dates applied</th>
+								<th>Date applied</th>
+								<th>Date confirmed</th>
+								<th>Status</th> 
+								
+							</tr>
+						</thead>
+						<tbody>
+
+						{% for i in all_users %}
+						{% set u = current_user.return_user(i) %}
+						{% if u %}
+						{% set user_info = u.return_vacationLeaves(u.username) %}
+						{% if user_info %}
+						{% for us, e in user_info.iteritems() %}
+						{% if e == 1 or e ==2 or e==4   %}
+						<tr>
+							
+								<td>	 {{ u.username }}	</td>
+								<td>	 {{ us|e }}	</td>
+								
+								{% if e == 4 %}
+								<td> {{  u.format_one_date(u.return_date_pending_cancellation(u.username, us, 'vacationleave' ))}} </td>
+								<td> {{  u.format_one_date(u.return_date_confirmed_cancellation(u.username, us, 'vacationleave' ))}} </td>
+								{% elif e == 1 or e == 2 %}
+								<td> {{  u.format_one_date(u.return_date_pending(u.username, us, 'vacationleave' ))}} </td>
+								<td> {{  u.format_one_date(u.return_date_decided(u.username, us, 'vacationleave' ))}} </td>
+								{% endif %}
+								
+								{% if e == 1 %}
+								<td class="success">Confirmed</td>
+								{% elif e == 2 %}
+								<td class="danger">Denied</td>
+								{% elif e == 4 %}
+								<td class="danger">Cancelled</td>
+								{% endif %}
+								
+								
+								{% endif %}
+								{% endfor %}
+						</tr>
+						{% endif %}
+						{% endif %}
+						{% endfor %}
+						
+						</tbody>
+					</table>
+			  </div>
+			</div>
+		  </div>
+		 <div class="accordion-section">
+			<div class="accordion-section-title">
+			  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseSix">
+							 Offset Dates
+			  </a>
+			</div>
+			<div id="collapseSix" class="accordion-body collapse">
+			  <div class="accordion-inner">
+							<table class="table table-bordered table-hover">
+						<thead>
+							<tr>
+								<th>User</th>
+								<th>Leave dates applied</th>
+								<th>Date applied</th>
+								<th>Date confirmed</th>
+								<th>Status</th> 
+								
+							</tr>
+						</thead>
+						<tbody>
+						
+						{% for i in all_users %}
+						{% set u = current_user.return_user(i) %}
+						{% if u %}
+						{% set user_info = u.return_offsetDates(u.username) %}
+						{% if user_info %}
+						{% for us, e in user_info.iteritems() %}
+						{% if e == 1 or e ==2 or e==4  %}
+						<tr>
+							
+								<td>	 {{ u.username }}	</td>
+								<td>	 {% set date = current_user.format_dates(us) %}	
+								{% for i in date %}
+								{{ i }}
+								{% endfor %}</td>
+								
+								{% if e == 4 %}
+								<td> {{  u.format_one_date(u.return_date_pending_cancellation(u.username, us, 'offsetleave' ))}} </td>
+								<td> {{  u.format_one_date(u.return_date_confirmed_cancellation(u.username, us, 'offsetleave' ))}} </td>
+								{% elif e == 1 or e == 2 %}
+								<td> {{  u.format_one_date(u.return_date_pending(u.username, us, 'offsetleave' ))}} </td>
+								<td> {{  u.format_one_date(u.return_date_decided(u.username, us, 'offsetleave' ))}} </td>
+								{% endif %}
+								
+								{% if e == 1 %}
+								<td class="success">Confirmed</td>
+								{% elif e == 2 %}
+								<td class="danger">Denied</td>
+								{% elif e == 4 %}
+								<td class="danger">Cancelled</td>
+								{% endif %}
+								
+								
+								{% endif %}
+								{% endfor %}
+						</tr>
+						{% endif %}
+						{% endif %}
+						{% endfor %}
+						
+						</tbody>
+					</table>
+			  </div>
+			</div>
+		  </div>
+		  
+	
+		</div>		
+	</form>
+  </div>
