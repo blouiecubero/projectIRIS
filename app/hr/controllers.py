@@ -564,7 +564,7 @@ def confirm_offsetDays(user):
 	u = User.query.filter_by(username=user).first()
 	us = UserStatistics.query.filter_by(userId=u.id).first()
 	us.offset = int(us.proposed_offset) + int(us.offset)
-	us.proposed_offset = None
+	us.proposed_offset = 0
 	db_session.add(us)
 	db_session.commit()
 	flash('Number of offset days confirmed.')

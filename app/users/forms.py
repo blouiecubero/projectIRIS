@@ -5,7 +5,7 @@ from wtforms import TextField, widgets, SelectMultipleField, IntegerField, Passw
 from app.users.models import Role, User
 # Import Form validators
 from wtforms.validators import Required, Email, EqualTo, Length, Regexp
-
+from wtforms import ValidationError
 
 # Define the login form (WTForms)
 class MultiCheckboxField(SelectMultipleField):

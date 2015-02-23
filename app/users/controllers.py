@@ -70,7 +70,7 @@ def login():
     form = LoginForm(request.form)
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
-        print user.username
+      
         if user and check_password_hash(user.password, form.password.data):
             user.authenticated = True;
             login_user(user);
