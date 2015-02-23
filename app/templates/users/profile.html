@@ -7,17 +7,26 @@
   {% include 'home/upload_picture_modal.html' %}
   {% include 'home/left_sidebar.html' %}
   
-  FIRST NAME: {{ user.first_name }}
-  <br>
-  MIDDLE NAME: {{ user.middle_name }}
-   <br>
-  LAST NAME: {{ user.last_name }} 
-  <br>
-  EMAIL: {{ user.email }}
-   <br>
-  Number of sick leaves: {{ userleaves.sl }}
-  <br>
-  Number of Vacation leaves: {{ userleaves.vl }}
-  
+  <div class = "col-md-6">
+	  FIRST NAME: {{ user.first_name }}
+	  <br>
+	  MIDDLE NAME: {{ user.middle_name }}
+	   <br>
+	  LAST NAME: {{ user.last_name }} 
+	  <br>
+	  EMAIL: {{ user.email }}
+	   <br>
+	  SUPERVISOR: {{ user.supervisor }}
+	   <br>
+	   {% if current_user.is_supervisor %}
+	   SUPERVISEES: {{ user.supervisee }}
+	   <br>
+	  {% endif %}
+	  Number of sick leaves: {{ userleaves.sl }}
+	  <br>
+	  Number of Vacation leaves: {{ userleaves.vl }}
+	  <br>
+	  Number of Offset leaves: {{ userleaves.offset }}
+  <div>
   
  {% endblock %}

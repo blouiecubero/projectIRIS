@@ -55,7 +55,7 @@
                		<th> Offset days: </th>
                      <td> {{ leaveData.offset }} </td> <!-- Fetched from DB -->
                     <td>
-					{% if leaveData.offset != 0 %}
+					{% if leaveData.offset or leaveData.offset != 0%}
                       <input type="Text" id="offsetDateField" name="offsetDateField" class="form-control" placeholder="mm-dd-yyyy"> 
                       <script> jQuery('#offsetDateField').datepicker({format: 'mm-dd-yy', clearBtn: true, multidate: true, multidateSeparator: ";", todayHighlight: true }); </script>
 					  <button class="btn btn-primary" type="submitButton" value="submitOd" name = "submitOd"> Submit Offset Date </button>

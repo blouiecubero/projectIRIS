@@ -13,6 +13,7 @@ from app.database import db_session, Base,init_db
 from app.users.forms import LoginForm, ChangePasswordForm, AddRolesForm, AddUserForms, UploadProfilePictureForm
 from app.users.models import User, ProfileImage, Role, Permission, UserStatistics
 from app.projects.models import Project
+
 from app.users.helpers import Role_Determinator
 from config import ADMIN
 
@@ -70,7 +71,6 @@ def login():
     form = LoginForm(request.form)
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
-        print user.username
         if user and check_password_hash(user.password, form.password.data):
             user.authenticated = True;
             login_user(user);
@@ -92,6 +92,7 @@ def add_users():
 
     print form.select_role.choices 
     if form.validate_on_submit():
+
         password = generate_password_hash('seer')       
         u = User (form.fname.data,form.midname.data,form.lname.data,    ## Load user
                   form.email.data,form.username.data,password)
