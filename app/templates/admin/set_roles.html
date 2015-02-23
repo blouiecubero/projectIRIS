@@ -28,12 +28,18 @@
 				<tbody>
 				  <tr>
 				{% for u in all_users %}
+<<<<<<< HEAD
 					
 				  <td>
 				  
 				  <a href="#" data-toggle="modal" data-target="#confirm-delete-{{ loop.index }}"><img src = "{{url_for('static', filename='assets/images/x.png') }}"></a> 
 				  
 				  <!-- <a class="confirm" id="alert" href="{{url_for('Users.delete_users', user=u.username)}}"  ><img src = "{{url_for('static', filename='assets/images/check.png') }}"></a> -->
+=======
+
+				  <td>
+				  <a href="#" data-toggle="modal" data-target="#confirm-delete"><img src = "{{url_for('static', filename='assets/images/x.png') }}"></a>
+>>>>>>> 35877167617b9bff5c3a29ff1a2035b05f75dc31
 				  {{u.username}}
 				  </td>
 				  
@@ -46,8 +52,12 @@
 					/></td>	
 				  {% endfor %}
 				  </tr>
+<<<<<<< HEAD
 				{% include 'admin/confirmation_users_modal.html' %}
 				
+=======
+				  {% include 'admin/confirmation_users_modal.html' %}
+>>>>>>> 35877167617b9bff5c3a29ff1a2035b05f75dc31
 				{% endfor %}
 				
 				<input class="btn btn-primary" button type="submit" name="button" value="Save Roles"></input><br>

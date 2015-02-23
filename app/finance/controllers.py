@@ -33,8 +33,11 @@ def inject_permissions():
 
     return dict(user_perms = current_user.load_perms(current_user.active_role),
                     user = current_user,role=current_user.load_roles(current_user.username))
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 35877167617b9bff5c3a29ff1a2035b05f75dc31
 
 # Initializing class for temporary storage
 store_user = Store_Users()

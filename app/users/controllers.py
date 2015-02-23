@@ -16,7 +16,10 @@ from app.projects.models import Project
 
 from app.users.helpers import Role_Determinator
 from config import ADMIN
+<<<<<<< HEAD
 
+=======
+>>>>>>> 35877167617b9bff5c3a29ff1a2035b05f75dc31
 ##from app.decorators.controllers import admin_required
 from app import login_manager, oid, imageUploadSet
 
@@ -81,6 +84,7 @@ def login():
 @Users.route('/admin/add_users', methods=['GET','POST'])
 def add_users():
     form = AddUserForms(request.form)
+<<<<<<< HEAD
     all_users = User.query.all()
     form.select_role.choices = [(role.id, role.name)        ## Loads up choices
                                 for role in Role.query.all()] 
@@ -93,11 +97,20 @@ def add_users():
     print form.select_role.choices 
     if form.validate_on_submit():
 
+=======
+    form.select_role.choices = [(role.id, role.name)        ## Loads up choices
+                                for role in Role.query.all()] 
+    print form.select_role.choices 
+    if form.validate_on_submit():
+>>>>>>> 35877167617b9bff5c3a29ff1a2035b05f75dc31
         password = generate_password_hash('seer')       
         u = User (form.fname.data,form.midname.data,form.lname.data,    ## Load user
                   form.email.data,form.username.data,password)
         print form.select_role.data
+<<<<<<< HEAD
 
+=======
+>>>>>>> 35877167617b9bff5c3a29ff1a2035b05f75dc31
         for i in form.select_role.data:  ## Loads up the selected choices of the user
             print i 
             u.role.append(Role.query.get(i))
@@ -140,6 +153,7 @@ def delete_users(user):
     ## Checks if the user is an admin
     if current_user.is_admin(current_user.username):
         u = User.query.filter_by(username=user).first()
+<<<<<<< HEAD
         us = UserStatistics.query.filter_by(userId=u.id).first()
 
         # loads the supervisor and deletes the user
@@ -152,6 +166,8 @@ def delete_users(user):
         load_supervisees.remove(u.username)
         supervisor.supervisee = ' '.join(load_supervisees)
         print supervisor.supervisee
+=======
+>>>>>>> 35877167617b9bff5c3a29ff1a2035b05f75dc31
         db_session.delete(u)
         db_session.add(supervisor)
         db_session.commit()
@@ -299,6 +315,7 @@ def change_active_role(role):
     flash('ACTIVE ROLE CHANGED')
     return redirect(url_for('Home.show_home'))
 
+<<<<<<< HEAD
 
 @Users.route('/profile/<user>', methods=['GET','POST'])
 def profile(user):
@@ -309,6 +326,8 @@ def profile(user):
     return render_template('users/profile.html', user = u, userleaves=us, upload_picture_form = upload_picture_form,
                             profile_picture=url_for_profile_picture)
 
+=======
+>>>>>>> 35877167617b9bff5c3a29ff1a2035b05f75dc31
 
 @Users.route('/change_password/',methods=['GET','POST'])
 @login_required
