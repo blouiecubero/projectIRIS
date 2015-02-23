@@ -13,8 +13,6 @@ from sqlalchemy.ext.mutable import Mutable
 
 ########################## ASSOCIATION TABLES ################################
 
-########################## ASSOCIATION TABLES ################################
-
 # @definition - Creates a table for the pivot table for users-projects relationship
 user_projects = Table('user_projects',Base.metadata,
     Column('id',Integer,primary_key=True,autoincrement=True),
@@ -35,15 +33,9 @@ class User_Role_Link(Base):
     role_id = Column(Integer, ForeignKey('roles.id'), primary_key=True)
 
 ######################### ASSOCIATION TABLES END ###########################
-<<<<<<< HEAD
 
 
 
-=======
-
-
-
->>>>>>> 35877167617b9bff5c3a29ff1a2035b05f75dc31
 ############################# TABLES PROPER ################################
 class User(UserMixin, Base):
 
@@ -73,7 +65,6 @@ class User(UserMixin, Base):
     #Many-to-many
     role = relationship('Role', secondary='user_roles')
 
-<<<<<<< HEAD
     ## Stores the supervisor of the user.
     supervisor = Column(String(255), unique=True)    
 
@@ -82,9 +73,6 @@ class User(UserMixin, Base):
 
     ## Stores the supervisee of the user.
     supervisee = Column(String(255), unique=True)    
-=======
-    
->>>>>>> 35877167617b9bff5c3a29ff1a2035b05f75dc31
 
     def __init__(self, fname=None,mname=None,lname=None, email=None, username=None, password=None):
         self.first_name = fname
@@ -141,17 +129,13 @@ class User(UserMixin, Base):
     
     ## Checks if the user is an admin
     def is_admin(self, user):
-<<<<<<< HEAD
         print user
-=======
->>>>>>> 35877167617b9bff5c3a29ff1a2035b05f75dc31
         u = User.query.filter_by(username=user).first()
         r = Role.query.filter_by(name='Administrator').first()
         if r in u.role:
             return True
         return False
 
-<<<<<<< HEAD
     def return_user(self,user):
         print user
         u = User.query.filter_by(username=user).first()
@@ -392,8 +376,6 @@ class User(UserMixin, Base):
         print temp
         return temp
 
-=======
->>>>>>> 35877167617b9bff5c3a29ff1a2035b05f75dc31
     def is_authenticated(self):
         return True
  

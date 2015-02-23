@@ -5,7 +5,7 @@ from wtforms import TextField, widgets, SelectMultipleField, IntegerField, Passw
 from app.users.models import Role, User
 # Import Form validators
 from wtforms.validators import Required, Email, EqualTo, Length, Regexp
-from wtforms import ValidationError
+
 
 # Define the login form (WTForms)
 class MultiCheckboxField(SelectMultipleField):
@@ -46,14 +46,11 @@ class AddUserForms(Form):
                                          'Usernames must have only letters,'
                                          'numbers, dots or underscores')])
     select_role = SelectMultipleField('Choose Role (To choose more than 1, press and hold Ctrl button, then click to your second choice)',coerce=int)
-<<<<<<< HEAD
     number_of_sick_leaves = IntegerField('Number of sick leaves: ', validators=[Required()])
     number_of_vacation_leaves = IntegerField('Number of vacation leaves: ', validators=[Required()])
     select_supervisor = SelectField('Choose a supervisor', coerce=str)
     check_if_supervisor = BooleanField('Is this user a supervisor?')
 
-=======
->>>>>>> 35877167617b9bff5c3a29ff1a2035b05f75dc31
     submit = SubmitField('Register')
 
     def validate_email(self, field):

@@ -16,12 +16,6 @@
 			{% if current_user.check_perms('Upload Payslip', user_perms) %}
 			<li><a href="{{url_for('PaySlip.payslip_base')}}">Upload Payslip</a></li>
 			{% endif %}
-<<<<<<< HEAD
-=======
-			{% if current_user.check_perms('HR Functionalities', user_perms) %}
-			<li><a href="{{url_for('HR.leaves')}}">HR - Leaves</a></li> <!-- Added by Ann -->
-			{% endif %}
->>>>>>> 35877167617b9bff5c3a29ff1a2035b05f75dc31
 			{% if current_user.check_perms('View Payslip', user_perms) %}
 			<li><a href="{{url_for('PaySlip.view_payslip')}}">View Payslip</a></li> 
 			{% endif %}
@@ -73,16 +67,6 @@
 	          </ul>
 	        </li>
 			
-			<li class="dropdown">
-	          <a class="dropdown-toggle" data-toggle="dropdown" href="#">Load Roles
-	          <span class="caret"></span></a>
-	          <ul class="dropdown-menu">
-				{% for r in role %}
-	            <li>
-				<a href="{{ url_for('Users.change_active_role', role=r.name) }}">{% if current_user.active_role == r.name %}<img src = "{{url_for('static', filename='assets/images/check.png') }}"> {% endif %}{{r.name}}</a></li>
-				{% endfor %}
-	          </ul>
-	        </li>
 			<li class="dropdown">
 	          <a class="dropdown-toggle" data-toggle="dropdown" href="#">{{user.username}}
 	          <span class="caret"></span></a>
