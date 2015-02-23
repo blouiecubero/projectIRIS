@@ -29,7 +29,7 @@ CSRF_SESSION_KEY = "secret"
 # Secret key for signing cookies
 SECRET_KEY = "secret"
 
-UPLOADS_DEFAULT_DEST = os.path.join(BASE_DIR, 'app\\var\\uploads')
-UPLOADS_FILES_DEST = os.path.join(BASE_DIR, 'app\\var\\uploads\\files')
+UPLOADS_DEFAULT_DEST = os.path.join(BASE_DIR, 'app/var/uploads')
+UPLOADS_FILES_DEST = os.path.join(BASE_DIR, 'app/var/uploads/files')
 UPLOADED_FILES_ALLOW = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 ALLOWED_DOCUMENTS = set(['pdf','PDF'])
