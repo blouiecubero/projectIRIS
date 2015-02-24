@@ -1,11 +1,11 @@
 # Import Form and RecaptchaField (optional)
 from flask.ext.wtf import Form # , RecaptchaField
 
-from wtforms import TextField, widgets, SelectMultipleField, PasswordField, FileField, StringField, SelectField, SubmitField
+from wtforms import TextField, widgets, SelectMultipleField, IntegerField, PasswordField, FileField, StringField, SelectField, SubmitField, BooleanField
 from app.users.models import Role, User
 # Import Form validators
 from wtforms.validators import Required, Email, EqualTo, Length, Regexp
-
+from wtforms import ValidationError
 
 # Define the login form (WTForms)
 class MultiCheckboxField(SelectMultipleField):
@@ -46,9 +46,20 @@ class AddUserForms(Form):
                                          'Usernames must have only letters,'
                                          'numbers, dots or underscores')])
     select_role = SelectMultipleField('Choose Role (To choose more than 1, press and hold Ctrl button, then click to your second choice)',coerce=int)
+    number_of_sick_leaves = IntegerField('Number of sick leaves: ', validators=[Required()])
+    number_of_vacation_leaves = IntegerField('Number of vacation leaves: ', validators=[Required()])
+    select_supervisor = SelectField('Choose a supervisor', coerce=str)
+    check_if_supervisor = BooleanField('Is this user a supervisor?')
+
     submit = SubmitField('Register')
 
-class DeleteUserForms(Form):
-    chosen_user = SelectField('Select user',coerce=int)
-    submit = SubmitField('Delete user')
+    def validate_email(self, field):
+        if User.query.filter_by(email=field.data).first():
+            raise ValidationError('Email already registered')
+
+    def validate_username(self, field):
+        if User.query.filter_by(username=field.data).first():
+            raise ValidationError('Username already in use')
+
+
     

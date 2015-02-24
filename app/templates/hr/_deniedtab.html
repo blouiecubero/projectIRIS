@@ -1,0 +1,142 @@
+	<div class = "denied" class="tab-pane fade">
+		<div class="accordion" id="accordion2">
+		  <div class="accordion-section">
+			<div class="accordion-section-title">
+			  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseSeven">
+				Sick Leaves
+			  </a>
+			</div>
+			<div id="collapseSeven" class="accordion-body collapse in">
+			  <div class="accordion-inner">
+					<table class="table table-bordered table-hover">
+						<thead>
+							<tr>
+								<th>User</th>
+								<th>Dates Applied</th>
+								<th>Status</th> 
+								<th>Decision</th>
+							</tr>
+						</thead>
+						<tbody>
+						
+						{% for i in all_users %}
+						{% set u = current_user.return_user(i) %}
+						{% if u %}
+						{% set user_info = u.return_sickLeaves(u.username) %}
+						{% if user_info %}
+						{% for us, e in user_info.iteritems() %}
+						{% if e == 2 %}
+						<tr>
+								<td>	 {{ u.username }}	</td>
+								<td>	 {{ us }}	</td>
+								
+								<td class="danger">Denied</td>
+								
+								
+								
+								{% endif %}
+								{% endfor %}
+						</tr>
+						{% endif %}
+						{% endif %}
+						{% endfor %}
+						
+						</tbody>
+					</table>
+				</tr>
+			  </div>
+			</div>
+		  </div>
+		  <div class="accordion-section">
+			<div class="accordion-section-title">
+			  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseEight">
+							 Vacation Leave 
+			  </a>
+			</div>
+			<div id="collapseEight" class="accordion-body collapse">
+			  <div class="accordion-inner">
+					<table class="table table-bordered table-hover">
+						<thead>
+							<tr>
+								<th>User</th>
+								<th>Dates Applied</th>
+								<th>Status</th> 
+								<th>Decision</th>
+							</tr>
+						</thead>
+						<tbody>
+
+						{% for i in all_users %}
+						{% set u = current_user.return_user(i) %}
+						{% if u %}
+						{% set user_info = u.return_vacationLeaves(u.username) %}
+						{% if user_info %}
+						{% for us, e in user_info.iteritems() %}
+						{% if e == 2 %}
+						<tr>
+							
+								<td>	 {{ u.username }}	</td>
+								<td>	 {{ us|e }}	</td>
+								
+								<td class="danger">Denied</td>
+								
+								{% endif %}
+								{% endfor %}
+						</tr>
+						{% endif %}
+						{% endif %}
+						{% endfor %}
+						
+						</tbody>
+					</table>
+			  </div>
+			</div>
+		  </div>
+		 <div class="accordion-section">
+			<div class="accordion-section-title">
+			  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion3" href="#collapseNine">
+							 Offset Dates
+			  </a>
+			</div>
+			<div id="collapseNine" class="accordion-body collapse">
+			  <div class="accordion-inner">
+							<table class="table table-bordered table-hover">
+						<thead>
+							<tr>
+								<th>User</th>
+								<th>Dates Applied</th>
+								<th>Status</th> 
+								<th>Decision</th>
+							</tr>
+						</thead>
+						<tbody>
+						
+						{% for i in all_users %}
+						{% set u = current_user.return_user(i) %}
+						{% if u %}
+						{% set user_info = u.return_sickLeaves(u.username) %}
+						{% if user_info %}
+						{% for us, e in user_info.iteritems() %}
+						{% if e == 2 %}
+						<tr>
+							
+								<td>	 {{ u.username }}	</td>
+								<td>	 {{ us|e }}	</td>
+								
+								<td class="danger">Denied</td>
+									
+								{% endif %}
+								{% endfor %}
+						</tr>
+						{% endif %}
+						{% endif %}
+						{% endfor %}
+						
+						</tbody>
+					</table>
+			  </div>
+			</div>
+		  </div>
+		</div>		
+	</form>
+  </div>

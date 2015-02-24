@@ -1,3 +1,4 @@
+DateTime==4.0.1
 Flask==0.10.1
 Flask-Bootstrap==3.3.0.1
 Flask-Login==0.2.11
@@ -27,3 +28,5 @@ python-openid==2.2.5
 requests==2.4.3
 uWSGI==2.0.9
 wsgiref==0.1.2
+pytz==2014.10
+zope.interface==4.1.2
