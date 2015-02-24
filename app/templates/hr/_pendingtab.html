@@ -1,0 +1,226 @@
+	<div class = "pending" class="tab-pane fade in active">
+		<div class="accordion" id="accordion2">
+		  <div class="accordion-section">
+			<div class="accordion-section-title">
+			  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
+				Sick Leaves
+			  </a>
+			</div>
+			<div id="collapseOne" class="accordion-body collapse in">
+			  <div class="accordion-inner">
+					<table class="table table-bordered table-hover">
+						<thead>
+							<tr>
+								<th>User</th>
+								<th>Leave dates applied</th>
+								<th>Date applied</th>
+								<th>Status</th> 
+								<th>Decision</th>
+							</tr>
+						</thead>
+						<tbody>
+						
+						{% for i in all_users %}
+						{% set u = current_user.return_user(i) %}
+						{% if u %}
+						{% set user_info = u.return_sickLeaves(u.username) %}
+						{% if user_info %}
+						{% for us, e in user_info.iteritems() %}
+						{% if e == 0 or e == 3 %}
+						<tr>
+								<td>	 {{ u.username }}	</td>
+								<td>	 {{ us }}	</td>
+								<td> {{  u.format_one_date(u.return_date_pending(u.username, us, 'sickleave' ))}} </td>
+								
+								{% if e == 0 %}
+								<td class="warning">Pending..</td>
+								{% elif e == 3 %}
+								<td class="warning">Requesting for cancellation</td>
+								{% endif %}
+								
+								{% if e == 0 %}
+								<td><a href = "{{ url_for('HR.confirm_sickLeave', user=u.username, confdate= us|e, decision = 'confirm' ) }}">Confirm</a>
+									<a href = "{{ url_for('HR.confirm_sickLeave', user=u.username, confdate= us|e, decision = 'deny' ) }}">Deny</a>
+									</td>
+									
+								{% elif e == 3 %}
+								<td><a href = "{{ url_for('HR.cancellation', user=u.username, confdate= us|e, what_leave = 'sickleave', decision = 'confirm_cancel') }}">Confirm</a>
+									<a href = "{{ url_for('HR.cancellation', user=u.username, confdate= us|e, what_leave = 'sickleave', decision = 'cancel') }}">Cancel</a></td>
+								{% endif %}
+								
+								{% endif %}
+								{% endfor %}
+						</tr>
+						{% endif %}
+						{% endif %}
+						{% endfor %}
+						
+						</tbody>
+					</table>
+				</tr>
+			  </div>
+			</div>
+		  </div>
+		  <div class="accordion-section">
+			<div class="accordion-section-title">
+			  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
+							 Vacation Leave 
+			  </a>
+			</div>
+			<div id="collapseTwo" class="accordion-body collapse">
+			  <div class="accordion-inner">
+					<table class="table table-bordered table-hover">
+						<thead>
+							<tr>
+								<th>User</th>
+								<th>Leave dates applied</th>
+								<th>Date applied</th>
+								<th>Status</th> 
+								<th>Decision</th>
+							</tr>
+						</thead>
+						<tbody>
+
+						{% for i in all_users %}
+						{% set u = current_user.return_user(i) %}
+						{% if u %}
+						{% set user_info = u.return_vacationLeaves(u.username) %}
+						{% if user_info %}
+						{% for us, e in user_info.iteritems() %}
+						{% if e == 0 or e == 3 %}
+						<tr>
+							
+								<td>	 {{ u.username }}	</td>
+								<td>	 {{ us|e }}	</td>
+								<td> {{  u.format_one_date(u.return_date_pending(u.username, us, 'vacationleave')) }} </td>
+								
+								{% if e == 0 %}
+								<td class="warning">Pending..</td>
+								{% elif e == 3 %}
+								<td class="warning">Requesting for cancellation</td>
+								{% endif %}
+								
+								{% if e == 0 %}
+								<td><a href = "{{ url_for('HR.confirm_vacationLeave', user=u.username, confdate= us|e, decision = 'confirm') }}">Confirm</a>
+									<a href = "{{ url_for('HR.confirm_vacationLeave', user=u.username, confdate= us|e, decision = 'deny') }}">Deny</a>
+									</td>
+								{% elif e == 3 %}
+								<td><a href = "{{ url_for('HR.cancellation', user=u.username, confdate= us|e, what_leave = 'vacationleave', decision = 'confirm_cancel') }}">Confirm</a>
+									<a href = "{{ url_for('HR.cancellation', user=u.username, confdate= us|e, what_leave = 'vacationleave', decision = 'cancel') }}">Cancel</a></td>
+								{% endif %}
+								
+								{% endif %}
+								{% endfor %}
+						</tr>
+						{% endif %}
+						{% endif %}
+						{% endfor %}
+						
+						</tbody>
+					</table>
+			  </div>
+			</div>
+		  </div>
+		 <div class="accordion-section">
+			<div class="accordion-section-title">
+			  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion3" href="#collapseThree">
+							 Offset Dates
+			  </a>
+			</div>
+			<div id="collapseThree" class="accordion-body collapse">
+			  <div class="accordion-inner">
+							<table class="table table-bordered table-hover">
+						<thead>
+							<tr>
+								<th>User</th>
+								<th>Leave dates applied</th>
+								<th>Date applied</th>
+								<th>Status</th> 
+								<th>Decision</th>
+							</tr>
+						</thead>
+						<tbody>
+						
+						{% for i in all_users %}
+						{% set u = current_user.return_user(i) %}
+						{% if u %}
+						{% set user_info = u.return_offsetDates(u.username) %}
+						{% if user_info %}
+						{% for us, e in user_info.iteritems() %}
+						{% if e == 0 or e == 3%}
+						<tr>
+							
+								<td>	 {{ u.username }}	</td>
+								<td>	 {% set date = current_user.format_dates(us) %}	
+								{% for i in date %}
+								{{ i }}
+								{% endfor %}	</td>
+								<td> {{  u.format_one_date(u.return_date_pending(u.username, us, 'offsetleave' ))}} </td>
+								
+								{% if e == 0 %}
+								<td class="warning">Pending..</td>
+								{% elif e == 3 %}
+								<td class="warning">Requesting for cancellation</td>
+								{% endif %}
+								
+								{% if e == 0 %}
+								<td><a href = "{{ url_for('HR.confirm_offsetDates', user=u.username, confdate= us|e, decision = 'confirm') }}">Confirm</a>
+									<a href = "{{ url_for('HR.confirm_offsetDates', user=u.username, confdate= us|e, decision = 'deny') }}">Deny</a>
+									</td>
+								{% elif e == 3 %}
+								<td><a href = "{{ url_for('HR.cancellation', user=u.username, confdate= us|e, what_leave = 'offset', decision = 'confirm_cancel') }}">Confirm</a>
+									<a href = "{{ url_for('HR.cancellation', user=u.username, confdate= us|e, what_leave = 'offset', decision = 'cancel') }}">Cancel</a></td>
+								{% endif %}
+								
+								{% endif %}
+								{% endfor %}
+						</tr>
+						{% endif %}
+						{% endif %}
+						{% endfor %}
+						
+						</tbody>
+					</table>
+			  </div>
+			</div>
+		  </div>
+		   <div class="accordion-section">
+			<div class="accordion-section-title">
+			  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseSeven">
+							 Offset Days
+			  </a>
+			</div>
+			<div id="collapseSeven" class="accordion-body collapse">
+			  <div class="accordion-inner">
+							<table class="table table-bordered table-hover">
+						<thead>
+							<tr>
+								<th>User</th>
+								<th>Number of offset days applied</th>
+								<th>Decision</th>
+							</tr>
+						</thead>
+						<tbody>
+								{% for i in all_users %}
+								{% set u = current_user.return_user(i) %}
+								{% if u %}
+								{% set p = current_user.return_userstatistics(i) %}
+								{% if p.proposed_offset %}
+							<tr>
+								
+								<td>{{ u.username }}</td>
+								<td>{{ p.proposed_offset }}</td>
+								<td><a href = "{{ url_for('HR.confirm_offsetDays', user=u.username) }}">Confirm</a></td>
+								
+							</tr>
+							{% endif %}
+							{% endif %}
+							{% endfor %}
+						</tbody>
+					</table>
+			  </div>
+			</div>
+		  </div>
+		</div>		
+	</form>
+  </div>

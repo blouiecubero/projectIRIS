@@ -10,11 +10,12 @@ from sqlalchemy.sql import exists
 from sqlalchemy import or_
 from flask.ext.uploads import UploadSet, IMAGES, configure_uploads
 from app.database import db_session, Base,init_db
-from app.users.forms import LoginForm, ChangePasswordForm, DeleteUserForms, AddRolesForm, AddUserForms
-from app.users.models import User, ProfileImage, Role, Permission
+from app.users.forms import LoginForm, ChangePasswordForm, AddRolesForm, AddUserForms, UploadProfilePictureForm
+from app.users.models import User, ProfileImage, Role, Permission, UserStatistics
 from app.projects.models import Project
 from app.users.helpers import Role_Determinator
 from config import ADMIN
+
 ##from app.decorators.controllers import admin_required
 from app import login_manager, oid, imageUploadSet
 
@@ -69,7 +70,7 @@ def login():
     form = LoginForm(request.form)
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
-        print user.username
+      
         if user and check_password_hash(user.password, form.password.data):
             user.authenticated = True;
             login_user(user);
@@ -80,19 +81,53 @@ def login():
 @Users.route('/admin/add_users', methods=['GET','POST'])
 def add_users():
     form = AddUserForms(request.form)
+    all_users = User.query.all()
     form.select_role.choices = [(role.id, role.name)        ## Loads up choices
                                 for role in Role.query.all()] 
+    ## load roles that had supervisor roles in it:
+ 
+
+    form.select_supervisor.choices = [(user.username, user.username)
+                                     for user in User.query.all() if user.is_supervisor]
+
     print form.select_role.choices 
     if form.validate_on_submit():
         password = generate_password_hash('seer')       
         u = User (form.fname.data,form.midname.data,form.lname.data,    ## Load user
                   form.email.data,form.username.data,password)
         print form.select_role.data
+
         for i in form.select_role.data:  ## Loads up the selected choices of the user
             print i 
             u.role.append(Role.query.get(i))
         print u.role
+
+        ##Checks if the user is a supervisor
+        if form.check_if_supervisor.data:
+            u.is_supervisor = True
+
+        ## Loads up the supervisor of the user, and loads up the user to its supervisor
+        u.supervisor = form.select_supervisor.data
+        print form.select_supervisor.data
+
+        supervisor = User.query.filter_by(username=form.select_supervisor.data).first()
+        if supervisor.supervisee is None or '': 
+            
+            supervisor.supervisee = u.username
+            print supervisor.supervisee
+        else:
+            supervisor.supervisee = supervisor.supervisee + ' ' + u.username
+            print supervisor.supervisee
+
         db_session.add(u)
+        db_session.add(supervisor)
+        db_session.commit()
+
+        us = UserStatistics(userId=u.id)
+        us.sl = form.number_of_sick_leaves.data
+        us.vl = form.number_of_vacation_leaves.data
+        us.offset = 0
+        db_session.add(us)
         db_session.commit()
         flash('User Created')
         return redirect(url_for('Users.add_users'))
@@ -104,7 +139,20 @@ def delete_users(user):
     ## Checks if the user is an admin
     if current_user.is_admin(current_user.username):
         u = User.query.filter_by(username=user).first()
+        us = UserStatistics.query.filter_by(userId=u.id).first()
+
+        # loads the supervisor and deletes the user
+        load_supervisor = u.supervisor
+        supervisor = User.query.filter_by(username=load_supervisor).first()
+        load_supervisees = supervisor.supervisee
+        print "Load supervisee before split: " + str(load_supervisees)
+        load_supervisees = load_supervisees.split(' ')
+        print "Load supervisee after split: " + str(load_supervisees)
+        load_supervisees.remove(u.username)
+        supervisor.supervisee = ' '.join(load_supervisees)
+        print supervisor.supervisee
         db_session.delete(u)
+        db_session.add(supervisor)
         db_session.commit()
         flash('User Deleted')
         return redirect(url_for('Users.set_roles'))
@@ -249,6 +297,16 @@ def change_active_role(role):
     current_user.active_role = r.name
     flash('ACTIVE ROLE CHANGED')
     return redirect(url_for('Home.show_home'))
+
+
+@Users.route('/profile/<user>', methods=['GET','POST'])
+def profile(user):
+    upload_picture_form = UploadProfilePictureForm(request.form)
+    url_for_profile_picture = getProfilePicture()
+    u = User.query.filter_by(username=user).first()
+    us = UserStatistics.query.filter_by(userId=u.id).first()
+    return render_template('users/profile.html', user = u, userleaves=us, upload_picture_form = upload_picture_form,
+                            profile_picture=url_for_profile_picture)
 
 
 @Users.route('/change_password/',methods=['GET','POST'])

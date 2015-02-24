@@ -4,37 +4,33 @@
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/css/styles.css') }}" >
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/css/nav-bar.css') }}" >
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/css/checkbox-sorter.css') }}" >
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/css/accordion.css') }}" >
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/css/bootstrap.min.css') }}" >
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/blitzer/jquery-ui.css" type="text/css" />
   <link href="{{ url_for('static', filename='assets/css/datepicker3.css') }}" rel="stylesheet">  <!-- Added by Ann -->
-
-  <script src="{{ url_for('static', filename='assets/js/bootstrap-datepicker.js') }}"></script> <!-- Added by Ann -->
   <script src="{{ url_for('static', filename='assets/js/jquery.js') }}"></script>
   <script src="{{ url_for('static', filename='assets/js/bootstrap.min.js') }}"></script>
+  <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script src="http://cdn.jsdelivr.net/jquery.cookie/1.4.0/jquery.cookie.min.js"></script>
-	<script>
-      $(":checkbox").on("change", function(){
-        var checkboxValues = {};
-        $(":checkbox").each(function(){
-          checkboxValues[this.id] = this.checked;
-        });
-        $.cookie('checkboxValues', checkboxValues, { expires: 7, path: '/' })
-      });
+  <script src="{{ url_for('static', filename='assets/js/bootstrap-datepicker.js') }}"></script> <!-- Added by Ann -->
+  <script src="{{ url_for('static', filename='assets/js/jquery.easy-confirm-dialog.js') }}"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+    $("#myTab a").click(function(e){
+    	e.preventDefault();
+    	$(this).tab('show');
+    });
+});
+</script>
 
-      function repopulateCheckboxes(){
-        var checkboxValues = $.cookie('checkboxValues');
-        if(checkboxValues){
-          Object.keys(checkboxValues).forEach(function(element) {
-            var checked = checkboxValues[element];
-            $("#" + element).prop('checked', checked);
-          });
-        }
-      }
-
-      $.cookie.json = true;
-      repopulateCheckboxes();
-    
-	</script>
+	
+<style type="text/css">
+	.bs-example{
+		margin: 20px;
+	}
+</style>
+ 
 	{% block scripts %}
 	{{ moment.include_moment() }}
 	{% endblock %}

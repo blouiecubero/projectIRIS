@@ -34,6 +34,8 @@ def inject_permissions():
     return dict(user_perms = current_user.load_perms(current_user.active_role),
                     user = current_user,role=current_user.load_roles(current_user.username))
 
+
+
 # Initializing class for temporary storage
 store_user = Store_Users()
 check_file_ext = FileChecker()
@@ -88,6 +90,8 @@ def upload_payslip():
             if(add_to_db(user)):
                 db_session.commit()
                 flash("Payslip Uploaded.")
+        else:
+            flash("File extension format not allowed (PDF ONLY).")
     return redirect(url_for('PaySlip.payslip_base')+"#uploadComplete")
 
 @PaySlip.route('/delete-payslip/<file_name>', methods=['GET', 'POST'])

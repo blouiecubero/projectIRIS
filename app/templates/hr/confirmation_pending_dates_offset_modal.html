@@ -1,24 +1,23 @@
-{% if current_user.check_perms('Administrator', user_perms) %}
-<div class="modal fade" id="confirm-delete-{{ loop.index }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+
+<div class="modal fade" id="confirm-delete-offset-{{ loop.index }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
             
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title" id="myModalLabel">Confirm Selection</h4>
+                    <h4 class="modal-title" id="myModalLabel">Confirmation</h4>
                 </div>
             
                 <div class="modal-body">
-                    <p>Do you want to proceed?</p>
+                    <p>Do you want to delete {{o}} and proceed?</p>
                     <p class="debug-url"></p>
                 </div>
                 
                 <div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-					<a href="{{url_for('Users.delete_users', user=u.username)}}" class="btn btn-danger" name="button">Proceed</a>
+					<a href="{{url_for('HR.delete_dates',user = current_user.username, date= o, what_leave = 'offset' )}}" class="btn btn-danger" name="button">Proceed</a>
                 </div>
 				
             </div>
         </div>
     </div>
-{% endif %}

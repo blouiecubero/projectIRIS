@@ -1,0 +1,41 @@
+{% if current_user.check_perms('HR Functionalities', user_perms) %}
+{% from "macros.html" import render_field %}
+{% extends "layout.html" %}
+{% block body %}
+
+  {% include 'home/navigation.html' %}
+  {% include 'flash_message.html' %}
+    <div class="jumbotron">
+      <div class="container">
+        <h1>Hello there,</h1>
+        <h3>You're supervisees have applied for the following dates: </h3>
+		
+<div class="bs-example">
+
+    <ul class="nav nav-tabs" id="myTab">
+        <li class="active"><a data-toggle="tab" href="#pending">Pending</a></li>
+        <li><a data-toggle="tab" href="#confirmed">Confirmed</a></li>  
+				
+        </li>
+    </ul>
+	
+    <div class="tab-content">
+	
+        <div id="pending" class="tab-pane fade in active">
+			{% include 'hr/_pendingtab.html' %}
+		</div>
+		
+        <div id="confirmed" class="tab-pane fade">
+			{% include 'hr/_confirmedtab.html' %}
+        </div>
+		
+		
+        
+    </div>
+</div>
+</div>
+</div>
+   
+
+{% endblock %}
+{% endif %}
