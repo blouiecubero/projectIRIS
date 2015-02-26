@@ -30,11 +30,7 @@
 						{% if e == 1 or e ==2 or e==4  %}
 						<tr>
 								<td>	 {{ u.username }}	</td>
-								<td>	 
-								{% set date = u.format_dates(us) %}	
-								{% for i in date %}
-								{{ i }}
-								{% endfor %}</td>
+								<td>	 {{ us }}	</td>
 								
 								{% if e == 4 %}
 								<td> {{ u.format_one_date(u.return_date_pending_cancellation(u.username, us, 'sickleave' ))}} </td>
@@ -96,11 +92,7 @@
 						<tr>
 							
 								<td>	 {{ u.username }}	</td>
-								<td>	 
-								{% set date = u.format_dates(us) %}	
-								{% for i in date %}
-								{{ i }}
-								{% endfor %}</td>
+								<td>	 {{ us|e }}	</td>
 								
 								{% if e == 4 %}
 								<td> {{  u.format_one_date(u.return_date_pending_cancellation(u.username, us, 'vacationleave' ))}} </td>
@@ -162,8 +154,7 @@
 						<tr>
 							
 								<td>	 {{ u.username }}	</td>
-								<td>	 
-								{% set date = current_user.format_dates(us) %}	
+								<td>	 {% set date = current_user.format_dates(us) %}	
 								{% for i in date %}
 								{{ i }}
 								{% endfor %}</td>

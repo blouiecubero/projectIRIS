@@ -6,11 +6,20 @@ def a():
 	from app.users.models import User, Role, Permission, Payslip
 	from app.database import db_session
 	from werkzeug import generate_password_hash
+
 def u(fname, mname, lname, email, username, pword):
 	u = User(fname,mname,lname ,email,username,generate_password_hash(pword))
 	db_session.add(u)
 	db_session.commit()
 
+def seer():
+	u('Seer','super','SuperAdmin','superseer@seer-technologies.com','seer','seer')
+	user = User.query.filter_by(username='seer').first()
+	r = Role.query.filter_by(name='Administrator').first()
+	user.roles.append(r)
+	user.is_supervisor = True
+	db_session.add(user)
+	db_session.commit()
 
 def p():
 	a = Permission('Administrator')
@@ -36,6 +45,16 @@ def r():
 	for i in roles:
 		db_session.add(i)
 
+	db_session.commit()
+
+def init_admin_perms():
+	r = Role.query.filter_by(name='Administrator').first()
+	perms = Permission.query.all()
+	
+	for i in perms:
+		r.permissions.append(i)
+
+	db_session.add(r)
 	db_session.commit()
 
 def resetdates():

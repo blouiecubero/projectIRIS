@@ -214,7 +214,7 @@ def leaves():
 				vlList = {}
 			offsetDates = dbQuery.offsetDates
 			offsetDatesRecord = dbQuery.offsetDatesRecord
-			if offsetDates is None or offsetDatesRecord is None:
+			if offsetDates is None:
 				dbQuery.offsetDates = {}
 				offsetDates = {}
 				offsetDatesRecord = {}

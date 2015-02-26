@@ -143,7 +143,7 @@ def delete_users(user):
 	
 	## Checks if the user tries to delete itself
 	if current_user.username == u.username:
-		flash('Sorry, but you cannot delete yourself. Think about those people who love you more than their world mi amigo.')
+		flash('Sorry, but you cannot delete yourself. Think about those people who love you, my friend.')
 		return redirect(url_for('Users.set_roles'))
         # loads the supervisor and deletes the user
         load_supervisor = u.supervisor

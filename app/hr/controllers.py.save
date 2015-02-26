@@ -72,8 +72,7 @@ def leaves():
 			if vlList is None:
 				dbQuery.vlDates = {}
 				dbQuery.vlDatesRecord = {}
-				vlList = {}
-				vlListRecord = {}
+				vlList =
 			offsetDates = dbQuery.offsetDates
 			offsetDatesRecord = dbQuery.offsetDatesRecord
 			if offsetDates is None:
@@ -146,7 +145,6 @@ def leaves():
 				dbQuery.vlDates = {}
 				dbQuery.vlDatesRecord = {}
 				vlList = {}
-				vlListRecord = {}
 			offsetDates = dbQuery.offsetDates
 			offsetDatesRecord = dbQuery.offsetDatesRecord
 			if offsetDates is None:
@@ -214,7 +212,7 @@ def leaves():
 				vlList = {}
 			offsetDates = dbQuery.offsetDates
 			offsetDatesRecord = dbQuery.offsetDatesRecord
-			if offsetDates is None or offsetDatesRecord is None:
+			if offsetDates is None:
 				dbQuery.offsetDates = {}
 				offsetDates = {}
 				offsetDatesRecord = {}
@@ -580,13 +578,13 @@ def summary():
 	dbQuery = UserStatistics.query.filter_by(userId = g.user.id).first() # get current_user ID
 
 	if not dbQuery:
-		sickSummary = None
+		slSummary = []
 	else:
 		sickSummary = dbQuery.slDatesRecord
 		
 
 	if not dbQuery:
-		vacationSummary = None
+		vacationSummary = []
 	else:
 		# vl = dbQuery.vlDates
 		# vacationSummary = vl.keys()
@@ -594,7 +592,7 @@ def summary():
 		
 		
 	if not dbQuery:
-		offsetSummary = None
+		offsetSummary = []
 	else:
 		offsetSummary = dbQuery.offsetDatesRecord
 		# od = dbQuery.offsetDates

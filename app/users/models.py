@@ -66,13 +66,13 @@ class User(UserMixin, Base):
     role = relationship('Role', secondary='user_roles')
 
     ## Stores the supervisor of the user.
-    supervisor = Column(String(255), unique=True)    
+    supervisor = Column(String(255))    
 
     ## Checks if the current user is a supervisor
-    is_supervisor = Column(Boolean, unique=True)    
+    is_supervisor = Column(Boolean)    
 
     ## Stores the supervisee of the user.
-    supervisee = Column(String(255), unique=True)    
+    supervisee = Column(String(255))    
 
     def __init__(self, fname=None,mname=None,lname=None, email=None, username=None, password=None):
         self.first_name = fname
