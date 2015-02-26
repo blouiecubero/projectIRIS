@@ -99,7 +99,7 @@ def delete_payslip(file_name):
     user = Payslip.query.filter_by(filename=file_name).first()                           # Checks the filename to be deleted
     db_session.delete(user)
     db_session.commit()# and poof
-    os.remove(current_app.config['UPLOADS_FILES_DEST'] +'/'+ file_name)                   # Remove it also from its storage
+    os.remove(current_app.config['UPLOADS_FILES_DEST'] +'//'+ file_name)                   # Remove it also from its storage
     flash('Payslip deleted.')
     return redirect(url_for('.payslip_base'))
 

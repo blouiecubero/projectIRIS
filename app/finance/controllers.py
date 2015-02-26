@@ -56,6 +56,8 @@ def payslip_base():
     all_users = User.query.all()
     whosuser = store_user.check_if_none()
     upload_file_form = UploadFileForm(request.form)
+    if not whosuser:
+        whosuser = current_user.username
     chosen_user = User.query.filter_by(username=whosuser).first() #Finds the user that was chosen by the admin
     finance = Payslip.query.filter_by(user = chosen_user.username).order_by(Payslip.date.desc()).all() #Loads up the files of the chosen_user
     if request.method == 'POST':
