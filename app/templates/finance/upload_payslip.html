@@ -28,7 +28,7 @@
 			<h4>File List for {{ whosuser }}:</h4>
 			<div class="feed">
 				{% for file in filebase %}
-				<div>Filename: <a href = "http://127.0.0.1:5000/uploads/payslip/{{ file.filename }}">{{file.filename}}</a></div>
+				<div>Filename: <a href = "http://seerlabs.com:81/iris/uploads/payslip/{{ file.filename }}">{{file.filename}}</a></div>
 				<div>Date uploaded: {{ moment(file.date).fromNow() }}</div>
 				<div><a href = "{{url_for('PaySlip.delete_payslip', file_name = file.filename) }}">Delete File</a></div>
 				{% endfor %}
